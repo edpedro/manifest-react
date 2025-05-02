@@ -1,15 +1,17 @@
-import {
+import React, {
   ReactNode,
   createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-import useApi from "../../services/api";
+
 import { toast } from "react-toastify";
 import { UIuser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { useLoading } from "./Loanding";
+
+import api from "../../services/api";
 
 type Props = {
   children?: ReactNode;
@@ -23,10 +25,16 @@ interface AuthContextData {
   authData?: UIuser;
   token?: UItoken;
   authenticated: boolean;
-  isLoadingStorage: boolean;
+  loadingAuth: boolean;
   signIn: (username: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  register: (name: string, username: string, password: string) => Promise<void>;
+  register: (
+    first_name: string,
+    last_name: string,
+    email: string,
+    username: string,
+    password: string
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -35,11 +43,9 @@ export const AuthProvider = ({ children }: Props) => {
   const [authData, setAuthData] = useState<UIuser>();
   const [token, setToken] = useState<UItoken>();
   const [authenticated, setAuthenticated] = useState(false);
-  const [isLoadingStorage, setIsLoadingStorage] = useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
-  const { setLoading } = useLoading();
-
-  const api = useApi();
+  const { setLoading, setLoadingFetch } = useLoading();
 
   const navigate = useNavigate();
 
@@ -49,6 +55,9 @@ export const AuthProvider = ({ children }: Props) => {
 
   async function loadStorageData(): Promise<void> {
     try {
+      //setLoading(true);
+      setLoadingFetch(true);
+
       const token = localStorage.getItem("@token");
       const data = localStorage.getItem("@data");
 
@@ -63,8 +72,11 @@ export const AuthProvider = ({ children }: Props) => {
         setAuthData(_data);
       }
     } catch (error) {
+      console.log(error.message);
     } finally {
-      setIsLoadingStorage(false);
+      //setLoading(false);
+      setLoadingFetch(false);
+      setLoadingAuth(false);
     }
   }
 
@@ -79,48 +91,48 @@ export const AuthProvider = ({ children }: Props) => {
         password,
       });
 
-      if (payload.role === "user") {
-        toast.error(`${payload.name} - Login não autorizado!`);
-        setAuthData(undefined);
-        setToken(undefined);
-        setLoading(false);
-        setAuthenticated(false);
-
-        return;
-      }
-
       setAuthData(payload);
       setToken(token);
-
       setAuthenticated(true);
-
       localStorage.setItem("@data", JSON.stringify(payload));
       localStorage.setItem("@token", JSON.stringify(token));
-
       api.defaults.headers.authorization = `Bearer ${token}`;
+
       toast.success("Login efetuado com sucesso!");
-      setLoading(false);
       navigate("/");
     } catch (error) {
-      setLoading(false);
+      console.log(error.message);
       toast.error("Login e Senha invalida!");
+    } finally {
+      setLoading(false);
     }
   }
 
-  async function register(name: string, username: string, password: string) {
+  async function register(
+    first_name: string,
+    last_name: string,
+    email: string,
+    username: string,
+    password: string
+  ) {
     try {
+      setLoading(true);
+
       await api.post("users", {
-        name,
-        username,
+        first_name,
+        last_name,
+        email,
         password,
-        role: "admin",
+        username,
       });
 
       navigate("/login");
 
       toast.success("Cadastro efetuado com sucesso!");
     } catch (error) {
-      toast.error("Informações invalida!");
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -137,13 +149,13 @@ export const AuthProvider = ({ children }: Props) => {
   return (
     <AuthContext.Provider
       value={{
-        isLoadingStorage,
         authenticated,
         token,
         authData,
         signIn,
         signOut,
         register,
+        loadingAuth,
       }}
     >
       {children}

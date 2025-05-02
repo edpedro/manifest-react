@@ -22,11 +22,51 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
+import { toast } from "react-toastify";
+import { useShipment } from "../../contexts/hooks/Shipment";
+import { UIExtratorDateExcel, UIExtratorExcel } from "../../types";
 
 export default function ExcelExtractor() {
+  const { extratorDateExcel, extratorSTSupplysExcel } = useShipment();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [textFilter, setTextFilter] = useState("");
+
+  const [action, setAction] = useState("");
+
+  const processTextFilter = (text) => {
+    if (!text.trim()) return [];
+
+    // Divide o texto por quebras de linha ou vírgulas
+    const items = text
+      .split(/[\n,]+/)
+      .map((item) => item.trim()) // Remove espaços extras
+      .filter((item) => item); // Remove itens vazios
+
+    return items;
+  };
+
+  const handleExtratorDateFile = () => {
+    if (action === "date" || action === "") {
+      if (!startDate || !endDate) {
+        toast.error("Favor preencher todos campos!");
+      } else {
+        const newData: UIExtratorDateExcel = {
+          data_start: startDate,
+          date_end: endDate,
+        };
+        extratorDateExcel(newData);
+      }
+    } else {
+      const result = processTextFilter(textFilter);
+
+      const newData: UIExtratorExcel = {
+        valeu: result,
+      };
+      extratorSTSupplysExcel(newData);
+      console.log(result);
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -45,7 +85,11 @@ export default function ExcelExtractor() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Filtros em abas separadas */}
-              <Tabs defaultValue="date" className="w-full">
+              <Tabs
+                defaultValue="date"
+                className="w-full"
+                onValueChange={setAction}
+              >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger
                     value="date"
@@ -113,7 +157,11 @@ export default function ExcelExtractor() {
               </Tabs>
             </CardContent>
             <CardFooter className="flex justify-center">
-              <Button className="w-full cursor-pointer" size="lg">
+              <Button
+                className="w-full cursor-pointer"
+                size="lg"
+                onClick={handleExtratorDateFile}
+              >
                 Extrair Dados
               </Button>
             </CardFooter>

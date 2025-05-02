@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent, useState } from "react";
 import { cn } from "../../lib/utils";
 import { Button } from "../../components/ui/button";
 import {
@@ -10,11 +10,57 @@ import {
 } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import { useAuth } from "../../contexts/hooks/Auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
+import { useLoading } from "../../contexts/hooks/Loanding";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { signIn, authenticated } = useAuth();
+  const { isLoading } = useLoading();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  if (authenticated) {
+    navigate("/");
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!formData.username || !formData.password) {
+      toast.error("Favor preencher todos dados!");
+      return;
+    }
+
+    try {
+      await signIn(formData.username, formData.password);
+      // Limpa os campos após o login bem-sucedido
+      setFormData({
+        username: formData.username,
+        password: "",
+      });
+    } catch (error) {
+      // Mantém os campos preenchidos em caso de erro para o usuário corrigir
+      console.error("Erro no login:", error);
+    }
+  };
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -29,14 +75,16 @@ export function LoginForm({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Usuario</Label>
+                    <Label htmlFor="username">Usuario</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
+                      id="username"
+                      name="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={handleChange}
                       required
                     />
                   </div>
@@ -44,15 +92,29 @@ export function LoginForm({
                     <div className="flex items-center">
                       <Label htmlFor="password">Senha</Label>
                     </div>
-                    <Input id="password" type="password" required />
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
-                  <Button type="submit" className="w-full cursor-pointer">
-                    Entrar
+                  <Button
+                    type="submit"
+                    className="w-full cursor-pointer"
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {isLoading ? "" : "Entrar"}
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
                   Não tem uma conta?{" "}
-                  <a href="#" className="underline underline-offset-4">
+                  <a href="/register" className="underline underline-offset-4">
                     Criar conta
                   </a>
                 </div>

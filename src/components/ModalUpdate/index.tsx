@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import {
   Dialog,
@@ -6,6 +6,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
@@ -16,9 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import { useShipment } from "../../contexts/hooks/Shipment";
+import { UpdateShipmentDto } from "../../types";
 
 interface ShipmentData {
-  id: number;
   st: string;
   supply: string;
   invoice_number: string;
@@ -35,12 +37,12 @@ interface ShipmentData {
 interface UIPropsModal {
   setOpenUpdate: (value: boolean) => void;
   openUpdate: boolean;
-  idUpdate: string;
 }
 
 export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
+  const { shipmentData, handleUpdateShipment } = useShipment();
+
   const [formData, setFormData] = useState<ShipmentData>({
-    id: 0,
     st: "",
     supply: "",
     invoice_number: "",
@@ -53,6 +55,35 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
     status: "",
     user: "",
   });
+
+  useEffect(() => {
+    function formatDate(date: Date | string | null): string {
+      if (!date) return "";
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const hours = String(d.getHours()).padStart(2, "0");
+      const minutes = String(d.getMinutes()).padStart(2, "0");
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    if (openUpdate && shipmentData) {
+      setFormData({
+        st: shipmentData.st || "",
+        supply: shipmentData.supply || "",
+        invoice_number: shipmentData.invoice_number || "",
+        invoice_issue_date: formatDate(shipmentData.invoice_issue_date || ""),
+        destination: shipmentData.destination || "",
+        carrier: shipmentData.carrier || "",
+        transport_mode: shipmentData.transport_mode || "",
+        Valeu_invoice: shipmentData.Valeu_invoice || 0,
+        category: shipmentData.category || "",
+        status: shipmentData.status || "",
+        user: shipmentData.user.first_name || "",
+      });
+    }
+  }, [openUpdate, shipmentData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -70,6 +101,28 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
   };
 
   const handleSubmit = () => {
+    try {
+      if (shipmentData) {
+        const updateData: UpdateShipmentDto = {
+          st: formData.st,
+          supply: formData.supply,
+          invoice_number: formData.invoice_number,
+          invoice_issue_date: new Date(formData.invoice_issue_date),
+          destination: formData.destination.toUpperCase(),
+          carrier: formData.carrier.toUpperCase(),
+          transport_mode: formData.transport_mode.toUpperCase(),
+          Valeu_invoice: formData.Valeu_invoice,
+          category: formData.category.toUpperCase(),
+          status: formData.status,
+        };
+
+        handleUpdateShipment(shipmentData.id, updateData);
+      }
+    } catch (error) {
+      // Mantém os campos preenchidos em caso de erro para o usuário corrigir
+      console.error("Erro no login:", error);
+    }
+
     setOpenUpdate(false);
   };
 
@@ -78,6 +131,9 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader className="items-center">
           <DialogTitle>Deseja atualizar?</DialogTitle>
+          <DialogDescription>
+            Atualize os campos necessários e clique em "Salvar alterações"
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AppSidebar } from "../../components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "../../components/ui/sidebar";
 import { SiteHeader } from "../../components/site-header";
@@ -12,17 +12,20 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Alert, AlertDescription } from "../../components/ui/alert";
-import { FileUp, Check, AlertCircle, Download } from "lucide-react";
+import { FileUp, AlertCircle, Download } from "lucide-react";
+import { useShipment } from "../../contexts/hooks/Shipment";
+import { UIShipmentCreate } from "../../types";
 
 export default function ExpeditionExcel() {
-  const [file, setFile] = useState(null);
+  const { modelInputExpedition, handleUpdateExpeditionShipment } =
+    useShipment();
+  const [file, setFile] = useState<File | null>();
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     setError("");
-    setSuccess(false);
 
     if (!selectedFile) {
       setFile(null);
@@ -49,9 +52,19 @@ export default function ExpeditionExcel() {
       return;
     }
 
-    // Aqui você processaria o arquivo
-    console.log("Processando arquivo:", file);
-    setSuccess(true);
+    const newData: UIShipmentCreate = {
+      file,
+    };
+    handleUpdateExpeditionShipment(newData);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setFile(null);
+  };
+
+  const handleModelDownload = () => {
+    modelInputExpedition();
   };
 
   return (
@@ -61,13 +74,16 @@ export default function ExpeditionExcel() {
         <SiteHeader />
         <div className="flex w-full py-4 ml-2">
           <div className="flex items-center gap-2">
-            <Download className="h-5 w-5 text-primary cursor-pointer" />
+            <Download
+              className="h-5 w-5 text-primary cursor-pointer"
+              onClick={handleModelDownload}
+            />
             <span className="text-sm text-muted-foreground font-medium">
               Planilha modelo
             </span>
           </div>
         </div>
-        <div className="flex flex-1 flex-col items-center justify-center p-4 md:p-8">
+        <div className="flex flex-1 flex-col items-center justify-center p-4 md:p-1">
           <Card className="w-full max-w-lg shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold">
@@ -85,6 +101,7 @@ export default function ExpeditionExcel() {
                     Selecionar arquivo Excel
                   </span>
                   <input
+                    ref={fileInputRef}
                     id="file-upload"
                     name="file-upload"
                     type="file"
@@ -102,15 +119,6 @@ export default function ExpeditionExcel() {
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-
-              {success && (
-                <Alert className="bg-green-50 border-green-200">
-                  <Check className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-700">
-                    Arquivo processado com sucesso!
-                  </AlertDescription>
                 </Alert>
               )}
             </CardContent>
