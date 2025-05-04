@@ -112,7 +112,7 @@ export function LineChartSupply() {
                 tickMargin={8}
                 minTickGap={10} // Reduzido para mostrar mais rótulos de data
                 tickFormatter={(value) => {
-                  const date = new Date(value);
+                  const date = new Date(value + "T00:00:00");
                   return date.toLocaleDateString("pt-BR", {
                     month: "short",
                     day: "numeric",
@@ -124,7 +124,8 @@ export function LineChartSupply() {
                 content={
                   <ChartTooltipContent
                     labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("pt-BR", {
+                      const date = new Date(value + "T00:00:00");
+                      return new Date(date).toLocaleDateString("pt-BR", {
                         month: "short",
                         day: "numeric",
                       });

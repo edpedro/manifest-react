@@ -58,13 +58,16 @@ export default function ExcelExtractor() {
         extratorDateExcel(newData);
       }
     } else {
-      const result = processTextFilter(textFilter);
+      if (!textFilter) {
+        toast.error("Favor preencher todos campos!");
+      } else {
+        const result = processTextFilter(textFilter);
 
-      const newData: UIExtratorExcel = {
-        valeu: result,
-      };
-      extratorSTSupplysExcel(newData);
-      console.log(result);
+        const newData: UIExtratorExcel = {
+          valeu: result,
+        };
+        extratorSTSupplysExcel(newData);
+      }
     }
   };
 
