@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: Props) => {
 
   async function loadStorageData(): Promise<void> {
     try {
-      //setLoading(true);
+      setLoadingAuth(true);
       setLoadingFetch(true);
 
       const token = localStorage.getItem("@token");
@@ -74,7 +74,6 @@ export const AuthProvider = ({ children }: Props) => {
     } catch (error) {
       console.log(error.message);
     } finally {
-      //setLoading(false);
       setLoadingFetch(false);
       setLoadingAuth(false);
     }

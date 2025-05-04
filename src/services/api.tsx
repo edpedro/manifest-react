@@ -35,80 +35,80 @@
 
 //correta
 
-import axios, { AxiosInstance, AxiosHeaders } from "axios";
+// import axios, { AxiosInstance, AxiosHeaders } from "axios";
 
-let apiInstance: AxiosInstance | null = null;
+// let apiInstance: AxiosInstance | null = null;
 
-export const createApiInstance = () => {
-  if (apiInstance) return apiInstance;
+// export const createApiInstance = () => {
+//   if (apiInstance) return apiInstance;
 
-  const instance = axios.create({
-    baseURL: import.meta.env.VITE_URL || "",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+//   const instance = axios.create({
+//     baseURL: import.meta.env.VITE_URL || "",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   });
 
-  // Request interceptor
-  instance.interceptors.request.use(
-    (config) => {
-      const tokenString = localStorage.getItem("@token");
+//   // Request interceptor
+//   instance.interceptors.request.use(
+//     (config) => {
+//       const tokenString = localStorage.getItem("@token");
 
-      if (tokenString) {
-        try {
-          const tokenData = JSON.parse(tokenString);
-          const token =
-            typeof tokenData === "object" && tokenData !== null
-              ? tokenData.token
-              : tokenData;
+//       if (tokenString) {
+//         try {
+//           const tokenData = JSON.parse(tokenString);
+//           const token =
+//             typeof tokenData === "object" && tokenData !== null
+//               ? tokenData.token
+//               : tokenData;
 
-          if (token) {
-            // Create new AxiosHeaders instance
-            const headers = new AxiosHeaders(config.headers);
-            headers.set("Authorization", `Bearer ${token}`);
-            config.headers = headers;
-          }
-        } catch (error) {
-          console.error("Error parsing token:", error);
-        }
-      }
+//           if (token) {
+//             // Create new AxiosHeaders instance
+//             const headers = new AxiosHeaders(config.headers);
+//             headers.set("Authorization", `Bearer ${token}`);
+//             config.headers = headers;
+//           }
+//         } catch (error) {
+//           console.error("Error parsing token:", error);
+//         }
+//       }
 
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
+//       return config;
+//     },
+//     (error) => {
+//       return Promise.reject(error);
+//     }
+//   );
 
-  // Response interceptor
-  instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      const originalRequest = error.config;
+//   // Response interceptor
+//   instance.interceptors.response.use(
+//     (response) => response,
+//     (error) => {
+//       const originalRequest = error.config;
 
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
+//       if (error.response?.status === 401 && !originalRequest._retry) {
+//         originalRequest._retry = true;
 
-        // Clear invalid token
-        localStorage.removeItem("@token");
-        localStorage.removeItem("@data");
+//         // Clear invalid token
+//         localStorage.removeItem("@token");
+//         localStorage.removeItem("@data");
 
-        // Redirect to login if in browser
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
-      }
+//         // Redirect to login if in browser
+//         if (typeof window !== "undefined") {
+//           window.location.href = "/login";
+//         }
+//       }
 
-      return Promise.reject(error);
-    }
-  );
+//       return Promise.reject(error);
+//     }
+//   );
 
-  apiInstance = instance;
-  return instance;
-};
+//   apiInstance = instance;
+//   return instance;
+// };
 
-const api = createApiInstance();
-export default api;
+// const api = createApiInstance();
+// export default api;
 
 // import axios, { AxiosInstance, AxiosHeaders } from "axios";
 
@@ -193,3 +193,87 @@ export default api;
 
 // const api = createApiInstance();
 // export default api;
+
+import axios, { AxiosInstance, AxiosHeaders } from "axios";
+
+let apiInstance: AxiosInstance | null = null;
+
+export const createApiInstance = () => {
+  if (apiInstance) return apiInstance;
+
+  const instance = axios.create({
+    baseURL: import.meta.env.VITE_URL || "",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Interceptor de requisição
+  instance.interceptors.request.use(
+    (config) => {
+      const tokenString = localStorage.getItem("@token");
+
+      if (tokenString) {
+        try {
+          const tokenData = JSON.parse(tokenString);
+          const token =
+            typeof tokenData === "object" && tokenData !== null
+              ? tokenData.token
+              : tokenData;
+
+          if (token) {
+            const headers = new AxiosHeaders(config.headers);
+            headers.set("Authorization", `Bearer ${token}`);
+            config.headers = headers;
+          }
+        } catch (error) {
+          console.error("Error parsing token:", error);
+        }
+      }
+
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  // Interceptor de resposta (com verificação para evitar loops)
+  instance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      const originalRequest = error.config;
+
+      // Verificar se é erro 401 e ainda não tentou repetir a requisição
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        // Remover dados de autenticação
+        localStorage.removeItem("@token");
+        localStorage.removeItem("@data");
+
+        // Redirecionar apenas se não estiver na página de login ou registro
+        if (typeof window !== "undefined") {
+          const currentPath = window.location.pathname;
+          if (
+            currentPath !== "/login" &&
+            currentPath !== "/register" &&
+            !currentPath.includes("/auth")
+          ) {
+            window.location.href = "/login";
+          }
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
+  apiInstance = instance;
+  return instance;
+};
+
+const api = createApiInstance();
+export default api;
