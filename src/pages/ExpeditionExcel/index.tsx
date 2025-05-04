@@ -126,7 +126,7 @@ export default function ExpeditionExcel() {
               <Button
                 onClick={handleProcessFile}
                 disabled={!file}
-                className="w-full"
+                className="w-full cursor-pointer"
                 size="lg"
               >
                 Processar Arquivo
