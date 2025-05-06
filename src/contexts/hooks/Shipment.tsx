@@ -56,7 +56,7 @@ export const ShipmentProvider = ({ children }: Props) => {
   const [createShipment, createSetShipment] = useState<CreateShipmentRequest>();
   const [dashData, setDashData] = useState<UIDashboard>();
 
-  const { setLoadingFetch } = useLoading();
+  const { setLoadingFetch, setDashboard } = useLoading();
 
   useEffect(() => {
     loadDashboard();
@@ -298,12 +298,16 @@ export const ShipmentProvider = ({ children }: Props) => {
   }, []);
 
   async function loadDashboard(): Promise<void> {
-    setLoadingFetch(true);
-    const result = await api.get("/shipment/data/dashboard");
+    try {
+      setDashboard(true);
+      const result = await api.get("/shipment/data/dashboard");
 
-    setDashData(result.data.data);
-
-    setLoadingFetch(false);
+      setDashData(result.data.data);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setDashboard(false);
+    }
   }
   return (
     <ShipmentContext.Provider

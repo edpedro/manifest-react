@@ -102,7 +102,7 @@ export default function ImportExcel() {
           <Card className="w-full max-w-lg shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold">
-                Importação de Excel
+                Importação de Pedidos
               </CardTitle>
               <CardDescription>
                 Selecione um arquivo Excel para importar

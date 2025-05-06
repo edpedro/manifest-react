@@ -31,22 +31,22 @@ const data = {
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Search",
+      title: "Pesquisar",
       url: "/search",
       icon: SearchIcon,
     },
     {
-      title: "Importar Arquivos",
+      title: "Importar Pedidos",
       url: "/import",
       icon: DatabaseIcon,
     },
     {
-      title: "Importar Expedição",
+      title: "Atualizar Expedição",
       url: "/expedition",
       icon: PieChart,
     },
     {
-      title: "Exportar Excel",
+      title: "Relatório",
       url: "/export",
       icon: ListIcon,
     },

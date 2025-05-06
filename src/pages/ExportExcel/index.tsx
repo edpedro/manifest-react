@@ -80,7 +80,7 @@ export default function ExcelExtractor() {
           <Card className="w-full max-w-2xl shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold">
-                Extração de Planilha Excel
+                Relatório em Planilha Excel
               </CardTitle>
               <CardDescription>
                 Selecione a forma que deseja realizar a extração

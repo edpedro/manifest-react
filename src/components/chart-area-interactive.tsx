@@ -20,6 +20,8 @@ import {
 } from "./ui/chart";
 
 import { useShipment } from "../contexts/hooks/Shipment";
+import { Loader2 } from "lucide-react";
+import { useLoading } from "../contexts/hooks/Loanding";
 
 // UIDashboard interface definition
 export interface UIDashboard {
@@ -46,6 +48,7 @@ function isValidDate(dateString) {
 }
 
 export function LineChartSupply() {
+  const { isDashboard } = useLoading();
   const { dashData } = useShipment();
 
   // Transform UIDashboard data into chart format
@@ -77,7 +80,12 @@ export function LineChartSupply() {
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Visão geral de Pedidos</CardTitle>
+          <CardTitle className="flex flex-row">
+            Visão geral de Pedidos
+            {isDashboard && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin ml-1" />
+            )}
+          </CardTitle>
           <CardDescription>
             Mostrando total de pedidos por período
           </CardDescription>

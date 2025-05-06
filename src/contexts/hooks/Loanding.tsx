@@ -16,10 +16,13 @@ interface LoadingContextData {
   isLoadingFetch: boolean;
   setLoadingFetch: (isLoading: boolean) => void;
   isLoading: boolean;
+  isDashboard: boolean;
   setLoading: (isLoading: boolean) => void;
+  setDashboard: (isLoading: boolean) => void;
   getLoadingFunctions: () => {
     setLoadingFetch: (isLoading: boolean) => void;
     setLoading: (isLoading: boolean) => void;
+    setDashboard: (isLoading: boolean) => void;
   };
 }
 
@@ -30,6 +33,7 @@ const LoadingContext = createContext<LoadingContextData>(
 export const LoadingProvider = ({ children }: Props) => {
   const [isLoadingFetch, setIsLoadingFetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDashboard, setIsDashboard] = useState(false);
 
   // Referência estável para as funções
   const loadingFunctionsRef = useRef({
@@ -39,6 +43,10 @@ export const LoadingProvider = ({ children }: Props) => {
     setLoading: (value: boolean) => {
       setIsLoading(value);
     },
+
+    setDashboard: (value: boolean) => {
+      setIsDashboard(value);
+    },
   });
 
   // Função para expor as funções de loading
@@ -46,6 +54,7 @@ export const LoadingProvider = ({ children }: Props) => {
     () => ({
       setLoadingFetch: loadingFunctionsRef.current.setLoadingFetch,
       setLoading: loadingFunctionsRef.current.setLoading,
+      setDashboard: loadingFunctionsRef.current.setDashboard,
     }),
     []
   );
@@ -60,6 +69,11 @@ export const LoadingProvider = ({ children }: Props) => {
     loadingFunctionsRef.current.setLoading(newIsLoading);
   }, []);
 
+  const setDashboard = useCallback((newIsLoading: boolean) => {
+    setIsDashboard(newIsLoading);
+    loadingFunctionsRef.current.setDashboard(newIsLoading);
+  }, []);
+
   return (
     <LoadingContext.Provider
       value={{
@@ -68,6 +82,8 @@ export const LoadingProvider = ({ children }: Props) => {
         isLoading,
         setLoading,
         getLoadingFunctions,
+        setDashboard,
+        isDashboard,
       }}
     >
       {children}

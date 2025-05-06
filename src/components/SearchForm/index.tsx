@@ -56,7 +56,7 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
             type="text"
             value={formData.searchData}
             onChange={handleChange}
-            placeholder="Procurar... ST, Fornecimento e Nota fsical"
+            placeholder="Procurar... ST, Fornecimento e Nota Fiscal"
             className="pl-8"
           />
           <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
