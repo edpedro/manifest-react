@@ -23,6 +23,7 @@ import {
 } from "./ui/sidebar";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import { useAuth } from "../contexts/hooks/Auth";
 
 const data = {
   navMain: [
@@ -108,6 +109,17 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { authData } = useAuth();
+  const filteredItems = data.navMain.filter((item) => {
+    if (authData?.type === "driver") {
+      // driver NÃO pode ver essas rotas
+      const blockedRoutes = ["/", "/import", "/expedition", "/export"];
+      return !blockedRoutes.includes(item.url);
+    }
+
+    // user pode ver tudo
+    return true;
+  });
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -116,7 +128,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={filteredItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
