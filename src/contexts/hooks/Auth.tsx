@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: Props) => {
     setAuthData(undefined);
     setAuthenticated(false);
 
-    api.defaults.headers.authorization = null;
+    delete api.defaults.headers.common["Authorization"];
 
     localStorage.removeItem("@data");
     localStorage.removeItem("@token");

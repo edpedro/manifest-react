@@ -46,7 +46,9 @@ export const ShippingProvider = ({ children }: Props) => {
   const { setLoadingFetch, isLoadingContext, setContext } = useLoading();
 
   useEffect(() => {
-    loadShipping();
+    if (isLoadingContext) {
+      loadShipping();
+    }
   }, [isLoadingContext]);
 
   const loadShipping = useCallback(async () => {

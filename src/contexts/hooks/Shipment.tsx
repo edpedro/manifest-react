@@ -68,7 +68,9 @@ export const ShipmentProvider = ({ children }: Props) => {
   const { handleFindIdShipping } = useShipping();
 
   useEffect(() => {
-    loadDashboard();
+    if (isLoadingContext) {
+      loadDashboard();
+    }
   }, [isLoadingContext]);
 
   const setDataSearch = (data: ShipmentDto[]) => {
