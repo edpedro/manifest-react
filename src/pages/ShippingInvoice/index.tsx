@@ -67,7 +67,7 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
     }
 
     try {
-      await searchInvoiceShipping(formData, 1);
+      await searchInvoiceShipping(formData, Number(id));
     } catch (error) {
       console.error(error);
     }

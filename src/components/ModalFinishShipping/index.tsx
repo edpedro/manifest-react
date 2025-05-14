@@ -71,9 +71,9 @@ export function ModalFinishShipping({
 
     const data: FinishManifestDto = {
       dispatch_date: formatEnvioDate(formData.dispatch_date),
-      dispatch_time: formData.dispatch_time,
+      dispatch_time: String(formData.dispatch_time),
     };
-    console.log(data);
+    //console.log(idFinish, data);
     if (shippingData && shippingData?.shipmentShipping.length > 0) {
       handleFinishShipping(idFinish, data);
     } else {

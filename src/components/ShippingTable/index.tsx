@@ -16,9 +16,11 @@ import { ModalDeleteShipping } from "../ModalDeleteShipping";
 import { useNavigate } from "react-router-dom";
 import { useMail } from "../../contexts/hooks/Mail";
 import { ModalFinishShipping } from "../ModalFinishShipping";
+import { useAuth } from "../../contexts/hooks/Auth";
 
 export function ShippingTable() {
   const { shippingAllData, handleFindIdShipping } = useShipping();
+  const { authData } = useAuth();
   const { handleSedMail } = useMail();
 
   const navigate = useNavigate();
@@ -104,7 +106,8 @@ export function ShippingTable() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center">
-                        {invoice.isConfirm === false ? (
+                        {authData?.type !== "driver" &&
+                        invoice.isConfirm === false ? (
                           <Button
                             variant="ghost"
                             size="sm"

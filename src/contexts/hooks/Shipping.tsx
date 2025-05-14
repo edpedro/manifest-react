@@ -154,9 +154,8 @@ export const ShippingProvider = ({ children }: Props) => {
       try {
         setLoadingFetch(true);
         setContext(true);
-        await api.patch(`/shipping/status/${id}`, {
-          data,
-        });
+        console.log(data);
+        await api.patch(`/shipping/status/${id}`, data);
 
         toast.success("Expedição finalizada");
       } catch (error) {
