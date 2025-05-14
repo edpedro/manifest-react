@@ -8,6 +8,7 @@ import React, {
 } from "react";
 
 import {
+  CreateManifestDto,
   CreateShipmentRequest,
   SearchDto,
   ShipmentDto,
@@ -21,6 +22,7 @@ import { useLoading } from "./Loanding";
 
 import api from "../../services/api";
 import { toast } from "react-toastify";
+import { useShipping } from "./Shipping";
 
 type Props = {
   children?: ReactNode;
@@ -44,6 +46,10 @@ interface ShipmentContextData {
   extratorDateExcel: (data: UIExtratorDateExcel) => Promise<void>;
   extratorSTSupplysExcel: (data: UIExtratorExcel) => Promise<void>;
   loadDashboard: () => Promise<void>;
+  searchInvoiceShipping: (
+    SearchData: SearchDto,
+    shippingId: number
+  ) => Promise<void>;
 }
 
 const ShipmentContext = createContext<ShipmentContextData>(
@@ -56,11 +62,14 @@ export const ShipmentProvider = ({ children }: Props) => {
   const [createShipment, createSetShipment] = useState<CreateShipmentRequest>();
   const [dashData, setDashData] = useState<UIDashboard>();
 
-  const { setLoadingFetch, setDashboard } = useLoading();
+  const { setLoadingFetch, setDashboard, setContext, isLoadingContext } =
+    useLoading();
+
+  const { handleFindIdShipping } = useShipping();
 
   useEffect(() => {
     loadDashboard();
-  }, []);
+  }, [isLoadingContext]);
 
   const setDataSearch = (data: ShipmentDto[]) => {
     setSearchData(data);
@@ -106,13 +115,15 @@ export const ShipmentProvider = ({ children }: Props) => {
     async (id: number, data: UpdateShipmentDto) => {
       try {
         setLoadingFetch(true);
+        setContext(true);
         const result = await api.patch(`/shipment/${id}`, data);
-        console.log(result.data);
+
         setDataSearch([result.data]);
         toast.success("Atualizado com sucesso!");
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
+        setContext(false);
         setLoadingFetch(false);
       }
     },
@@ -123,6 +134,7 @@ export const ShipmentProvider = ({ children }: Props) => {
     async (id: number) => {
       try {
         setLoadingFetch(true);
+        setContext(true);
         await api.delete(`/shipment/${id}`);
 
         const result = searchData.filter((item) => item.id !== id);
@@ -132,6 +144,7 @@ export const ShipmentProvider = ({ children }: Props) => {
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
+        setContext(false);
         setLoadingFetch(false);
       }
     },
@@ -165,6 +178,7 @@ export const ShipmentProvider = ({ children }: Props) => {
   const handleCreateShipment = useCallback(async (data: UIShipmentCreate) => {
     try {
       setLoadingFetch(true);
+      setContext(true);
       const result = await api.post("/shipment", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -174,6 +188,7 @@ export const ShipmentProvider = ({ children }: Props) => {
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
+      setContext(false);
       setLoadingFetch(false);
     }
   }, []);
@@ -206,6 +221,7 @@ export const ShipmentProvider = ({ children }: Props) => {
     async (data: UIShipmentCreate) => {
       try {
         setLoadingFetch(true);
+        setContext(true);
         const result = await api.post("/shipment/expedition", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -215,6 +231,7 @@ export const ShipmentProvider = ({ children }: Props) => {
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
+        setContext(false);
         setLoadingFetch(false);
       }
     },
@@ -309,6 +326,37 @@ export const ShipmentProvider = ({ children }: Props) => {
       setDashboard(false);
     }
   }
+
+  const searchInvoiceShipping = useCallback(
+    async (SearchData: SearchDto, id: number) => {
+      try {
+        setLoadingFetch(true);
+        const result = await api.post("/shipment/search", SearchData);
+
+        if (result.data.length <= 0) {
+          toast.error("Dados não encontrados");
+        }
+
+        const shippingId = id;
+        const shipmentId = result.data.map((item) => item.id);
+
+        const data: CreateManifestDto = {
+          shippingId,
+          shipmentId,
+        };
+        if (shipmentId.length > 0) {
+          await api.post("/shipping/manifest", data);
+          await handleFindIdShipping(id);
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message);
+      } finally {
+        setLoadingFetch(false);
+      }
+    },
+    []
+  );
+
   return (
     <ShipmentContext.Provider
       value={{
@@ -329,6 +377,7 @@ export const ShipmentProvider = ({ children }: Props) => {
         extratorSTSupplysExcel,
         loadDashboard,
         dashData,
+        searchInvoiceShipping,
       }}
     >
       {children}

@@ -5,6 +5,7 @@ export interface UIuser {
   email: string;
   username: string;
   password: string;
+  type: string;
 }
 export interface SearchDto {
   searchData: string;
@@ -105,4 +106,66 @@ export interface UIDashboard {
     dataCompleta: string;
     count: number;
   }[];
+}
+
+export interface CreateShippingDto {
+  name: string;
+  cpf: string;
+  placa: string;
+  dispatch_date: string;
+  transport: string;
+  estimatedArrival: string;
+}
+
+export interface UIShippingDto {
+  id: number;
+  name: string;
+  cpf: string;
+  placa: string;
+  dispatch_date: string;
+  transport: string;
+  estimatedArrival: string;
+  status: string;
+  statusEmail: string;
+  isConfirm: boolean;
+  shipmentShipping: {
+    shipment: {
+      id: number;
+      st: string;
+      supply: string;
+      invoice_number: string;
+      invoice_issue_date: Date;
+      destination: string;
+      carrier: string;
+      transport_mode: string;
+      Valeu_invoice: number;
+      category: string;
+      name: string;
+      transport: string;
+      cpf: string;
+      dispatch_date: string;
+      dispatch_time: string;
+      status: string;
+      observation: string;
+    };
+  }[];
+}
+
+export interface CreateManifestDto {
+  shippingId: number;
+  shipmentId: number[];
+}
+export interface DeletarManifestDto {
+  shipmentId: number[];
+}
+
+export interface DeleteShipmentDto {
+  id: number;
+  st: string;
+  supply: string;
+  invoice_number: string;
+}
+export interface FinishManifestDto {
+  dispatch_date: string;
+  dispatch_time: string;
 }

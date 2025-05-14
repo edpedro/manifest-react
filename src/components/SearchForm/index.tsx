@@ -46,21 +46,26 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
   return (
     <form {...props} onSubmit={handleSearch}>
       <SidebarGroup className="py-1">
-        <SidebarGroupContent className="relative flex max-w-lg items-center space-x-4 ml-5">
+        <SidebarGroupContent className="relative flex flex-col sm:flex-row max-w-lg items-center gap-2 sm:gap-4 sm:space-x-4 px-2 sm:px-0 sm:ml-2">
           <Label htmlFor="searchData" className="sr-only">
             Search
           </Label>
-          <SidebarInput
-            id="searchData"
-            name="searchData"
-            type="text"
-            value={formData.searchData}
-            onChange={handleChange}
-            placeholder="Procurar... ST, Fornecimento e Nota Fiscal"
-            className="pl-8"
-          />
-          <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
-          <Button type="submit" className="cursor-pointer">
+          <div className="relative w-full sm:w-auto">
+            <SidebarInput
+              id="searchData"
+              name="searchData"
+              type="text"
+              value={formData.searchData}
+              onChange={handleChange}
+              placeholder="Procurar... ST, Fornecimento e Nota Fiscal"
+              className="pl-8 w-full sm:w-auto"
+            />
+            <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
+          </div>
+          <Button
+            type="submit"
+            className="cursor-pointer w-full sm:w-auto h-9 sm:h-7 px-4 sm:mr-3"
+          >
             Pesquisar
           </Button>
         </SidebarGroupContent>

@@ -10,6 +10,7 @@ import {
   LayoutDashboardIcon,
   SearchIcon,
   PieChart,
+  FileText,
 } from "lucide-react";
 
 import {
@@ -49,6 +50,11 @@ const data = {
       title: "Relatório",
       url: "/export",
       icon: ListIcon,
+    },
+    {
+      title: "Romaneio",
+      url: "/romaneio",
+      icon: FileText,
     },
   ],
   navClouds: [

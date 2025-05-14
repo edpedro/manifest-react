@@ -8,6 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Loader2 } from "lucide-react";
@@ -29,6 +36,7 @@ export function RegisterForm({
     email: "",
     username: "",
     password: "",
+    type: "",
   });
 
   if (authenticated) {
@@ -43,6 +51,13 @@ export function RegisterForm({
     }));
   };
 
+  const handleSelectChange = (type: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -51,7 +66,8 @@ export function RegisterForm({
       !formData.last_name ||
       !formData.email ||
       !formData.username ||
-      !formData.password
+      !formData.password ||
+      !formData.type
     ) {
       toast.error("Favor preencher todos dados!");
       return;
@@ -63,7 +79,8 @@ export function RegisterForm({
         formData.last_name,
         formData.email,
         formData.username,
-        formData.password
+        formData.password,
+        formData.type
       );
       // Limpa os campos após o login bem-sucedido
       setFormData({
@@ -72,6 +89,7 @@ export function RegisterForm({
         email: formData.email,
         username: formData.username,
         password: "",
+        type: formData.type,
       });
     } catch (error) {
       // Mantém os campos preenchidos em caso de erro para o usuário corrigir
@@ -138,6 +156,25 @@ export function RegisterForm({
                       onChange={handleChange}
                       required
                     />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="type" className="text-right">
+                      Tipo
+                    </Label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value) =>
+                        handleSelectChange("type", value)
+                      }
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Selecione o tipo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">Administrativo</SelectItem>
+                        <SelectItem value="driver">Motorista</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center">

@@ -44,7 +44,7 @@ export function ShipmentTable() {
     setIdDelete(id);
     handleFindshipment(id);
   };
-  console.log(searchData);
+
   return (
     <>
       {searchData && searchData.length > 0 && (

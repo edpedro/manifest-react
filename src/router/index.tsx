@@ -8,6 +8,8 @@ import ExpeditionExcel from "../pages/ExpeditionExcel";
 import { LoginForm } from "../pages/Login";
 import { RegisterForm } from "../pages/Register";
 import PrivateRoutes from "../components/PrivateRoutes";
+import Shipping from "../pages/Shipping";
+import { ShippingInvoice } from "../pages/ShippingInvoice";
 
 const Routes = () => {
   return (
@@ -21,6 +23,8 @@ const Routes = () => {
         <Route path="/import" element={<ImportExcel />} />
         <Route path="/export" element={<ExportExcel />} />
         <Route path="/expedition" element={<ExpeditionExcel />} />
+        <Route path="/romaneio" element={<Shipping />} />
+        <Route path="/romaneio/invoice/:id" element={<ShippingInvoice />} />
       </Route>
     </Router>
   );

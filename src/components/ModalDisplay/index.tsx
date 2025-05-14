@@ -35,7 +35,7 @@ export function ModalDisplay({ openDisplay, setOpenDisplay }: UIPropsModal) {
     dispatch_date: "",
     dispatch_time: "",
   });
-  console.log(shipmentData);
+
   useEffect(() => {
     function formatDate(date: Date | string | null): string {
       if (!date) return "";

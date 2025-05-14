@@ -17,12 +17,15 @@ interface LoadingContextData {
   setLoadingFetch: (isLoading: boolean) => void;
   isLoading: boolean;
   isDashboard: boolean;
+  isLoadingContext: boolean;
   setLoading: (isLoading: boolean) => void;
   setDashboard: (isLoading: boolean) => void;
+  setContext: (isLoading: boolean) => void;
   getLoadingFunctions: () => {
     setLoadingFetch: (isLoading: boolean) => void;
     setLoading: (isLoading: boolean) => void;
     setDashboard: (isLoading: boolean) => void;
+    setContext: (isLoading: boolean) => void;
   };
 }
 
@@ -34,6 +37,8 @@ export const LoadingProvider = ({ children }: Props) => {
   const [isLoadingFetch, setIsLoadingFetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDashboard, setIsDashboard] = useState(false);
+
+  const [isLoadingContext, setIsLoadingContext] = useState(false);
 
   // Referência estável para as funções
   const loadingFunctionsRef = useRef({
@@ -47,6 +52,10 @@ export const LoadingProvider = ({ children }: Props) => {
     setDashboard: (value: boolean) => {
       setIsDashboard(value);
     },
+
+    setContext: (value: boolean) => {
+      setIsLoadingContext(value);
+    },
   });
 
   // Função para expor as funções de loading
@@ -55,6 +64,7 @@ export const LoadingProvider = ({ children }: Props) => {
       setLoadingFetch: loadingFunctionsRef.current.setLoadingFetch,
       setLoading: loadingFunctionsRef.current.setLoading,
       setDashboard: loadingFunctionsRef.current.setDashboard,
+      setContext: loadingFunctionsRef.current.setContext,
     }),
     []
   );
@@ -74,6 +84,11 @@ export const LoadingProvider = ({ children }: Props) => {
     loadingFunctionsRef.current.setDashboard(newIsLoading);
   }, []);
 
+  const setContext = useCallback((newIsLoading: boolean) => {
+    setIsLoadingContext(newIsLoading);
+    loadingFunctionsRef.current.setContext(newIsLoading);
+  }, []);
+
   return (
     <LoadingContext.Provider
       value={{
@@ -84,6 +99,8 @@ export const LoadingProvider = ({ children }: Props) => {
         getLoadingFunctions,
         setDashboard,
         isDashboard,
+        setContext,
+        isLoadingContext,
       }}
     >
       {children}

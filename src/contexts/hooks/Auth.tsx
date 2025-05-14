@@ -33,7 +33,8 @@ interface AuthContextData {
     last_name: string,
     email: string,
     username: string,
-    password: string
+    password: string,
+    type: string
   ) => Promise<void>;
 }
 
@@ -112,7 +113,8 @@ export const AuthProvider = ({ children }: Props) => {
     last_name: string,
     email: string,
     username: string,
-    password: string
+    password: string,
+    type: string
   ) {
     try {
       setLoading(true);
@@ -123,6 +125,7 @@ export const AuthProvider = ({ children }: Props) => {
         email,
         password,
         username,
+        type,
       });
 
       navigate("/login");
