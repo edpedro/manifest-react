@@ -33,9 +33,19 @@ const data = {
       icon: LayoutDashboardIcon,
     },
     {
+      title: "Romaneio",
+      url: "/romaneio",
+      icon: FileText,
+    },
+    {
       title: "Pesquisar",
       url: "/search",
       icon: SearchIcon,
+    },
+    {
+      title: "Relatório",
+      url: "/export",
+      icon: ListIcon,
     },
     {
       title: "Importar Pedidos",
@@ -46,16 +56,6 @@ const data = {
       title: "Atualizar Expedição",
       url: "/expedition",
       icon: PieChart,
-    },
-    {
-      title: "Relatório",
-      url: "/export",
-      icon: ListIcon,
-    },
-    {
-      title: "Romaneio",
-      url: "/romaneio",
-      icon: FileText,
     },
   ],
   navClouds: [

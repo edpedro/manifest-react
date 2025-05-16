@@ -85,11 +85,16 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
   };
 
   const autoFillForm = (value: string, type: "cpf" | "name") => {
-    const match = shippingAllData?.find((item: ShippingData) =>
-      type === "cpf"
-        ? item.cpf.replace(/\D/g, "") === value.replace(/\D/g, "")
-        : item.name.trim().toLowerCase() === value.trim().toLowerCase()
-    );
+    const sanitizedValue =
+      type === "cpf" ? value.replace(/\D/g, "") : value.trim().toLowerCase();
+
+    const match = shippingAllData?.find((item: ShippingData) => {
+      if (type === "cpf") {
+        return item.cpf.replace(/\D/g, "") === sanitizedValue;
+      } else {
+        return item.name.trim().toLowerCase() === sanitizedValue;
+      }
+    });
 
     if (match) {
       setFormData((prev) => ({
@@ -104,7 +109,6 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-
     let newValue = value;
 
     if (id === "cpf") {
@@ -129,8 +133,8 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     }
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
+  const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const { id, value } = e.currentTarget;
     if (id === "cpf") autoFillForm(value, "cpf");
     if (id === "name") autoFillForm(value, "name");
   };
@@ -204,20 +208,18 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cdastrar Romaneio</DialogTitle>
+          <DialogTitle>Cadastrar Romaneio</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="name" className="mb-1">
-              Nome
-            </Label>
+            <Label htmlFor="name">Nome</Label>
             <Input
               id="name"
               list="name-list"
               value={formData.name}
               onChange={handleChange}
-              onBlur={handleBlur}
+              onInput={handleInput}
               className={errors.name ? "border-red-500" : ""}
             />
             <datalist id="name-list">
@@ -231,15 +233,13 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
           </div>
 
           <div>
-            <Label htmlFor="cpf" className="mb-1">
-              CPF
-            </Label>
+            <Label htmlFor="cpf">CPF</Label>
             <Input
               id="cpf"
               list="cpf-list"
               value={formData.cpf}
               onChange={handleChange}
-              onBlur={handleBlur}
+              onInput={handleInput}
               className={errors.cpf ? "border-red-500" : ""}
             />
             <datalist id="cpf-list">
@@ -251,9 +251,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
           </div>
 
           <div>
-            <Label htmlFor="placa" className="mb-1">
-              Placa
-            </Label>
+            <Label htmlFor="placa">Placa</Label>
             <Input
               id="placa"
               value={formData.placa}
@@ -266,9 +264,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
           </div>
 
           <div>
-            <Label htmlFor="dispatch_date" className="mb-1">
-              Data de Saída
-            </Label>
+            <Label htmlFor="dispatch_date">Data de Saída</Label>
             <Input
               id="dispatch_date"
               type="datetime-local"
@@ -283,9 +279,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
           </div>
 
           <div>
-            <Label htmlFor="transport" className="mb-1">
-              Transportadora
-            </Label>
+            <Label htmlFor="transport">Transportadora</Label>
             <Input
               id="transport"
               value={formData.transport}
@@ -298,9 +292,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
           </div>
 
           <div>
-            <Label htmlFor="estimatedArrival" className="mb-1">
-              Previsão de Chegada
-            </Label>
+            <Label htmlFor="estimatedArrival">Previsão de Chegada</Label>
             <Input
               id="estimatedArrival"
               type="time"
@@ -317,7 +309,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
 
         <DialogFooter className="mt-4">
           <Button onClick={handleSubmit}>
-            {idUpdate ? "Atualizar" : "Salvar"}{" "}
+            {idUpdate ? "Atualizar" : "Criar"}
           </Button>
         </DialogFooter>
       </DialogContent>

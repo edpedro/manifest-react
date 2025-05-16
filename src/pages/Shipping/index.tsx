@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AppSidebar } from "../../components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "../../components/ui/sidebar";
 import { SiteHeader } from "../../components/site-header";
@@ -6,9 +6,16 @@ import { CirclePlus } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { ShippingTable } from "../../components/ShippingTable";
 import { ModalCreateShipping } from "../../components/ModalCreateShipping";
+import { useShipping } from "../../contexts/hooks/Shipping";
 
 export default function Shipping() {
+  const { loadShipping } = useShipping();
+
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    loadShipping();
+  }, []);
 
   const handleCreate = () => {
     setOpen(true);

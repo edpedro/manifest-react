@@ -22,7 +22,6 @@ export function ShippingTable() {
   const { shippingAllData, handleFindIdShipping } = useShipping();
   const { authData } = useAuth();
   const { handleSedMail } = useMail();
-
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -34,6 +33,7 @@ export function ShippingTable() {
 
   const sendMail = (id) => {
     handleSedMail(id);
+    handleFindIdShipping(id);
   };
 
   const handleFinish = (id) => {
@@ -59,6 +59,11 @@ export function ShippingTable() {
     navigate(`/romaneio/invoice/${id}`);
   };
 
+  function formatDate(date: Date | string | null): string {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+  }
+
   return (
     <>
       {shippingAllData && shippingAllData.length > 0 && (
@@ -76,22 +81,14 @@ export function ShippingTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {shippingAllData?.map((invoice) => {
-                // Definir a classe de fundo para o status
+              {shippingAllData.map((invoice) => {
                 let statusClass = "";
                 if (invoice.status === "Pendente") {
-                  statusClass = "bg-yellow-300"; // Amarelo claro
+                  statusClass = "bg-yellow-300";
                 } else if (invoice.status === "Expedido") {
-                  statusClass = "bg-green-200"; // Verde claro
+                  statusClass = "bg-green-200";
                 } else {
-                  statusClass = "bg-gray-200"; // Cor padrão para outros status
-                }
-
-                function formatDate(date: Date | string | null): string {
-                  if (!date) return ""; // Retorna vazio se for null
-                  return new Date(date).toLocaleDateString("pt-BR", {
-                    timeZone: "UTC",
-                  });
+                  statusClass = "bg-gray-200";
                 }
 
                 return (
@@ -105,13 +102,13 @@ export function ShippingTable() {
                       {invoice.status}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center">
+                      <div className="flex items-center space-x-1">
                         {authData?.type !== "driver" &&
                         invoice.isConfirm === false ? (
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="flex flex-col items-center gap-1  p-2 hover:bg-transparent cursor-pointer"
+                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
                             onClick={() => handleFinish(invoice.id)}
                           >
                             <Truck className="h-4 w-4 text-black-600" />
@@ -121,29 +118,61 @@ export function ShippingTable() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="flex flex-col items-center gap-1  p-2 hover:bg-transparent"
+                            className="flex items-center gap-1 px-2 py-1"
                           >
                             <Truck className="h-4 w-4 text-green-600" />
                             <span className="text-xs">Finalizado</span>
                           </Button>
                         )}
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="flex flex-col items-center gap-1  p-2 hover:bg-transparent cursor-pointer"
-                          onClick={() => handleInvoice(invoice.id)}
-                        >
-                          <FilePlus className="h-4 w-4 text-green-600" />
-                          <span className="text-xs">NFs</span>
-                        </Button>
-                        {invoice.statusEmail === undefined ||
-                        invoice.statusEmail === null ||
-                        invoice.statusEmail === "" ? (
+                        {invoice.status === "Expedido" ? (
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="flex flex-col items-center gap-1  p-2 hover:bg-transparent cursor-pointer"
+                            className="flex items-center gap-1 px-2 py-1 "
+                          >
+                            <FilePlus className="h-4 w-4 text-green-600" />
+                            <span className="text-xs">NFs</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
+                            onClick={() => handleInvoice(invoice.id)}
+                          >
+                            <FilePlus className="h-4 w-4 text-green-600" />
+                            <span className="text-xs">NFs</span>
+                          </Button>
+                        )}
+
+                        {invoice.shipmentShipping.length === 0 ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 px-2 py-1"
+                            disabled
+                          >
+                            <Mail className="h-4 w-4 text-gray-400" />
+                            <span className="text-xs text-gray-400">
+                              Enviar
+                            </span>
+                          </Button>
+                        ) : invoice.status === "Expedido" ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
+                          >
+                            <MailCheck className="h-4 w-4 text-green-600" />
+                            <span className="text-xs">Enviado</span>
+                          </Button>
+                        ) : invoice.statusEmail === null ||
+                          invoice.statusEmail === "" ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
                             onClick={() => sendMail(invoice.id)}
                           >
                             <Mail className="h-4 w-4 text-red-600" />
@@ -153,7 +182,7 @@ export function ShippingTable() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="flex flex-col items-center gap-1  p-2 hover:bg-transparent"
+                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
                           >
                             <MailCheck className="h-4 w-4 text-green-600" />
                             <span className="text-xs">Enviado</span>
@@ -163,7 +192,7 @@ export function ShippingTable() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="flex flex-col items-center gap-1  p-2 hover:bg-transparent cursor-pointer"
+                          className="flex items-center gap-1 px-2 py-1 cursor-pointer"
                           onClick={() => handleEdit(invoice.id)}
                         >
                           <Pencil className="h-4 w-4 text-blue-600" />
@@ -173,7 +202,7 @@ export function ShippingTable() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="flex flex-col items-center gap-1  p-2 hover:bg-transparent cursor-pointer"
+                          className="flex items-center gap-1 px-2 py-1 cursor-pointer"
                           onClick={() => handleDelete(invoice.id)}
                         >
                           <Trash2 className="h-4 w-4 text-red-600" />

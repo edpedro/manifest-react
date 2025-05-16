@@ -22,7 +22,6 @@ import { useLoading } from "./Loanding";
 
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { useShipping } from "./Shipping";
 
 type Props = {
   children?: ReactNode;
@@ -65,11 +64,10 @@ export const ShipmentProvider = ({ children }: Props) => {
   const { setLoadingFetch, setDashboard, setContext, isLoadingContext } =
     useLoading();
 
-  const { handleFindIdShipping } = useShipping();
-
   useEffect(() => {
     if (isLoadingContext) {
       loadDashboard();
+      setContext(false);
     }
   }, [isLoadingContext]);
 
@@ -103,9 +101,11 @@ export const ShipmentProvider = ({ children }: Props) => {
   const handleFindshipment = useCallback(async (id: number) => {
     try {
       setLoadingFetch(true);
+
       const result = await api.get(`/shipment/${id}`);
 
       setShipmentData(result.data);
+      setContext(true);
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
@@ -117,41 +117,37 @@ export const ShipmentProvider = ({ children }: Props) => {
     async (id: number, data: UpdateShipmentDto) => {
       try {
         setLoadingFetch(true);
-        setContext(true);
+
         const result = await api.patch(`/shipment/${id}`, data);
 
         setDataSearch([result.data]);
+        setContext(true);
         toast.success("Atualizado com sucesso!");
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
-        setContext(false);
         setLoadingFetch(false);
       }
     },
     []
   );
 
-  const handleDeleteShipment = useCallback(
-    async (id: number) => {
-      try {
-        setLoadingFetch(true);
-        setContext(true);
-        await api.delete(`/shipment/${id}`);
+  const handleDeleteShipment = useCallback(async (id: number) => {
+    try {
+      setLoadingFetch(true);
+      await api.delete(`/shipment/${id}`);
 
-        const result = searchData.filter((item) => item.id !== id);
+      const result = searchData.filter((item) => item.id !== id);
 
-        setDataSearch(result);
-        toast.success("Deletado com sucesso!");
-      } catch (error) {
-        toast.error(error.response?.data?.message);
-      } finally {
-        setContext(false);
-        setLoadingFetch(false);
-      }
-    },
-    [searchData]
-  );
+      setDataSearch(result);
+      setContext(true);
+      toast.success("Deletado com sucesso!");
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoadingFetch(false);
+    }
+  }, []);
 
   const modelInput = useCallback(async () => {
     try {
@@ -180,17 +176,17 @@ export const ShipmentProvider = ({ children }: Props) => {
   const handleCreateShipment = useCallback(async (data: UIShipmentCreate) => {
     try {
       setLoadingFetch(true);
-      setContext(true);
+
       const result = await api.post("/shipment", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       setCreateShipmentData(result.data);
+      setContext(true);
       toast.success("Upload realizado com sucesso!");
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
-      setContext(false);
       setLoadingFetch(false);
     }
   }, []);
@@ -223,17 +219,17 @@ export const ShipmentProvider = ({ children }: Props) => {
     async (data: UIShipmentCreate) => {
       try {
         setLoadingFetch(true);
-        setContext(true);
+
         const result = await api.post("/shipment/expedition", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
         setCreateShipmentData(result.data);
+        setContext(true);
         toast.success("Upload realizado com sucesso!");
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
-        setContext(false);
         setLoadingFetch(false);
       }
     },
@@ -348,7 +344,7 @@ export const ShipmentProvider = ({ children }: Props) => {
         };
         if (shipmentId.length > 0) {
           await api.post("/shipping/manifest", data);
-          await handleFindIdShipping(id);
+          setContext(true);
         }
       } catch (error) {
         toast.error(error.response?.data?.message);

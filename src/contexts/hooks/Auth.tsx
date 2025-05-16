@@ -99,7 +99,12 @@ export const AuthProvider = ({ children }: Props) => {
       api.defaults.headers.authorization = `Bearer ${token}`;
 
       toast.success("Login efetuado com sucesso!");
-      navigate("/");
+
+      if (payload.type === "driver") {
+        navigate("/romaneio");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       console.log(error.message);
       toast.error("Login e Senha invalida!");

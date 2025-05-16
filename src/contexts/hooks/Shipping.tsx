@@ -43,40 +43,39 @@ export const ShippingProvider = ({ children }: Props) => {
   const [shippingData, setShippingData] = useState<UIShippingDto>();
   const [shippingAllData, setShippingAllData] = useState<UIShippingDto[]>();
 
-  const { setLoadingFetch, isLoadingContext, setContext } = useLoading();
+  const { setLoadingFetch, setContext } = useLoading();
 
   useEffect(() => {
-    if (isLoadingContext) {
-      loadShipping();
-    }
-  }, [isLoadingContext]);
+    loadShipping();
+  }, []);
 
-  const loadShipping = useCallback(async () => {
+  async function loadShipping(): Promise<void> {
     try {
       setLoadingFetch(true);
-
       const result = await api.get("/shipping");
 
-      setShippingAllData(result.data);
+      const sortData = result.data.sort((a, b) => b.id - a.id);
+
+      setShippingAllData(sortData);
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
       setLoadingFetch(false);
     }
-  }, []);
+  }
 
   const handleCreateShipping = useCallback(async (data: CreateShippingDto) => {
     try {
       setLoadingFetch(true);
-      setContext(true);
+
       const result = await api.post("/shipping", data);
 
       setShippingData(result.data);
+      setContext(true);
       toast.success("Cadastro realizado!");
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
-      setContext(false);
       setLoadingFetch(false);
     }
   }, []);
@@ -99,16 +98,15 @@ export const ShippingProvider = ({ children }: Props) => {
     async (id: number, data: CreateShippingDto) => {
       try {
         setLoadingFetch(true);
-        setContext(true);
+
         const result = await api.patch(`/shipping/${id}`, data);
 
         setShippingData(result.data);
-
+        setContext(true);
         toast.success("Romaneio atualizado!");
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
-        setContext(false);
         setLoadingFetch(false);
       }
     },
@@ -118,14 +116,13 @@ export const ShippingProvider = ({ children }: Props) => {
   const handleDeleteShipping = useCallback(async (id: number) => {
     try {
       setLoadingFetch(true);
-      setContext(true);
-      await api.delete(`/shipping/${id}`);
 
+      await api.delete(`/shipping/${id}`);
+      setContext(true);
       toast.success("Romaneio deletado!");
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
-      setContext(false);
       setLoadingFetch(false);
     }
   }, []);
@@ -134,17 +131,15 @@ export const ShippingProvider = ({ children }: Props) => {
     async (id: number, data: DeletarManifestDto) => {
       try {
         setLoadingFetch(true);
-        setContext(true);
+
         await api.delete(`/shipping/manifest/${id}`, {
           data,
         });
-
+        setContext(true);
         toast.success("Nota fiscal deletada!");
-        handleFindIdShipping(id);
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
-        setContext(false);
         setLoadingFetch(false);
       }
     },
@@ -155,15 +150,13 @@ export const ShippingProvider = ({ children }: Props) => {
     async (id: number, data: FinishManifestDto) => {
       try {
         setLoadingFetch(true);
-        setContext(true);
-        console.log(data);
-        await api.patch(`/shipping/status/${id}`, data);
 
+        await api.patch(`/shipping/status/${id}`, data);
+        setContext(true);
         toast.success("Expedição finalizada");
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
-        setContext(false);
         setLoadingFetch(false);
       }
     },

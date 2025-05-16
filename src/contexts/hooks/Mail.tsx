@@ -19,14 +19,14 @@ export const MailProvider = ({ children }: Props) => {
   const handleSedMail = useCallback(async (id: number) => {
     try {
       setLoadingFetch(true);
-      setContext(true);
+
       await api.post(`/mail/enviar/${id}`);
+      setContext(true);
 
       toast.success("Email enviado com sucesso!");
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
-      setContext(false);
       setLoadingFetch(false);
     }
   }, []);

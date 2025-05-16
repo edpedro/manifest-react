@@ -24,7 +24,7 @@ import { useLoading } from "../../contexts/hooks/Loanding";
 export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
   const { searchInvoiceShipping } = useShipment();
   const { shippingData, handleFindIdShipping } = useShipping();
-  const { isLoadingFetch } = useLoading();
+  const { isLoadingFetch, isLoadingContext } = useLoading();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
     };
 
     fetch();
-  }, [id, handleFindIdShipping]);
+  }, [id, handleFindIdShipping, isLoadingContext]);
 
   useEffect(() => {
     if (hasTriedLoad && !isLoadingFetch && !shippingData) {

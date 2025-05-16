@@ -14,11 +14,11 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   return (
     <LoadingProvider>
       <AuthProvider>
-        <MailProvider>
-          <ShippingProvider>
-            <ShipmentProvider>{children}</ShipmentProvider>
-          </ShippingProvider>
-        </MailProvider>
+        <ShippingProvider>
+          <ShipmentProvider>
+            <MailProvider>{children}</MailProvider>
+          </ShipmentProvider>
+        </ShippingProvider>
       </AuthProvider>
     </LoadingProvider>
   );
