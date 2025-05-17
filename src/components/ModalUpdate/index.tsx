@@ -257,7 +257,7 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
               <SelectContent>
                 <SelectItem value="MKT">MKT</SelectItem>
                 <SelectItem value="FIXA">FIXA</SelectItem>
-                <SelectItem value="OUTROS">OSP</SelectItem>
+                <SelectItem value="OSP">OSP</SelectItem>
                 <SelectItem value="OUTROS">FERRAMENTAL</SelectItem>
               </SelectContent>
             </Select>

@@ -167,5 +167,5 @@ export interface DeleteShipmentDto {
 }
 export interface FinishManifestDto {
   dispatch_date: string;
-  dispatch_time: string;
+  dispatch_time?: string;
 }

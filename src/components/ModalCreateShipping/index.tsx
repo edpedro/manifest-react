@@ -223,9 +223,15 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
               className={errors.name ? "border-red-500" : ""}
             />
             <datalist id="name-list">
-              {shippingAllData?.map((item, index) => (
-                <option key={index} value={item.name.toUpperCase()} />
-              ))}
+              {[
+                ...new Set(
+                  shippingAllData?.map((item) => item.name.toUpperCase())
+                ),
+              ]
+                .sort()
+                .map((name, index) => (
+                  <option key={index} value={name} />
+                ))}
             </datalist>
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name}</p>
@@ -243,9 +249,11 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
               className={errors.cpf ? "border-red-500" : ""}
             />
             <datalist id="cpf-list">
-              {shippingAllData?.map((item, index) => (
-                <option key={index} value={formatCpf(item.cpf)} />
-              ))}
+              {[...new Set(shippingAllData?.map((item) => formatCpf(item.cpf)))]
+                .sort()
+                .map((cpf, index) => (
+                  <option key={index} value={cpf} />
+                ))}
             </datalist>
             {errors.cpf && <p className="text-red-500 text-sm">{errors.cpf}</p>}
           </div>
@@ -308,7 +316,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
         </div>
 
         <DialogFooter className="mt-4">
-          <Button onClick={handleSubmit}>
+          <Button onClick={handleSubmit} className="cursor-pointer">
             {idUpdate ? "Atualizar" : "Criar"}
           </Button>
         </DialogFooter>

@@ -125,26 +125,15 @@ export function ShippingTable() {
                           </Button>
                         )}
 
-                        {invoice.status === "Expedido" ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-1 px-2 py-1 "
-                          >
-                            <FilePlus className="h-4 w-4 text-green-600" />
-                            <span className="text-xs">NFs</span>
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
-                            onClick={() => handleInvoice(invoice.id)}
-                          >
-                            <FilePlus className="h-4 w-4 text-green-600" />
-                            <span className="text-xs">NFs</span>
-                          </Button>
-                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="flex items-center gap-1 px-2 py-1 cursor-pointer"
+                          onClick={() => handleInvoice(invoice.id)}
+                        >
+                          <FilePlus className="h-4 w-4 text-green-600" />
+                          <span className="text-xs">NFs</span>
+                        </Button>
 
                         {invoice.shipmentShipping.length === 0 ? (
                           <Button

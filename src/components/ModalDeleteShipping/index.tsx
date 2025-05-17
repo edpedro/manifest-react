@@ -54,7 +54,6 @@ export function ModalDeleteShipping({
         handleDeleteShipping(shippingData.id);
       }
     } catch (error) {
-      // Mantém os campos preenchidos em caso de erro para o usuário corrigir
       console.error("Erro no login:", error);
     }
 

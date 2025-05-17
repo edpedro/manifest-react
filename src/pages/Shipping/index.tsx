@@ -7,15 +7,16 @@ import { Button } from "../../components/ui/button";
 import { ShippingTable } from "../../components/ShippingTable";
 import { ModalCreateShipping } from "../../components/ModalCreateShipping";
 import { useShipping } from "../../contexts/hooks/Shipping";
+import { useLoading } from "../../contexts/hooks/Loanding";
 
 export default function Shipping() {
   const { loadShipping } = useShipping();
-
+  const { isLoadingContext } = useLoading();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     loadShipping();
-  }, []);
+  }, [isLoadingContext]);
 
   const handleCreate = () => {
     setOpen(true);

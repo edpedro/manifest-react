@@ -27,7 +27,6 @@ export function ModalFinishShipping({
   const { handleFinishShipping, shippingData } = useShipping();
   const [formData, setFormData] = useState<FinishManifestDto>({
     dispatch_date: "",
-    dispatch_time: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -69,11 +68,13 @@ export function ModalFinishShipping({
       return d.toISOString();
     };
 
+    const time = formData.dispatch_date.split("T")[1];
+
     const data: FinishManifestDto = {
       dispatch_date: formatEnvioDate(formData.dispatch_date),
-      dispatch_time: String(formData.dispatch_time),
+      dispatch_time: time,
     };
-    //console.log(idFinish, data);
+
     if (shippingData && shippingData?.shipmentShipping.length > 0) {
       handleFinishShipping(idFinish, data);
     } else {
@@ -107,26 +108,12 @@ export function ModalFinishShipping({
               <p className="text-red-500 text-sm">{errors.dispatch_date}</p>
             )}
           </div>
-          <div>
-            <Label htmlFor="dispatch_time" className="mb-1">
-              Hora expedição
-            </Label>
-            <Input
-              id="dispatch_time"
-              type="time"
-              value={formData.dispatch_time}
-              onChange={handleChange}
-              autoComplete="off"
-              className={errors.dispatch_time ? "border-red-500" : ""}
-            />
-            {errors.dispatch_time && (
-              <p className="text-red-500 text-sm">{errors.dispatch_time}</p>
-            )}
-          </div>
         </div>
 
         <DialogFooter className="mt-4">
-          <Button onClick={handleSubmit}>finalizar</Button>
+          <Button onClick={handleSubmit} className="cursor-pointer">
+            finalizar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
