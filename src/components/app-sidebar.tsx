@@ -117,13 +117,17 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { authData } = useAuth();
   const filteredItems = data.navMain.filter((item) => {
-    if (authData?.type === "driver") {
-      // driver NÃO pode ver essas rotas
-      const blockedRoutes = ["/", "/import", "/expedition", "/export"];
-      return !blockedRoutes.includes(item.url);
+    const role = authData?.type;
+
+    if (role === "driver") {
+      const allowedRoutes = ["/romaneio", "/search"];
+      return allowedRoutes.includes(item.url);
     }
 
-    // user pode ver tudo
+    if (role === "user") {
+      return item.url !== "/mail";
+    }
+
     return true;
   });
   return (

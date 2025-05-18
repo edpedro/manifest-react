@@ -1,5 +1,5 @@
 import React from "react";
-import { LineWave } from "react-loader-spinner";
+import { ThreeCircles } from "react-loader-spinner";
 import { useLoading } from "../../contexts/hooks/Loanding";
 
 export const GlobalLoader: React.FC = () => {
@@ -13,17 +13,14 @@ export const GlobalLoader: React.FC = () => {
           backgroundColor: "rgba(255, 255, 255, 0.7)",
         }}
       >
-        <LineWave
+        <ThreeCircles
           visible={true}
-          height="200"
-          width="200"
+          height="50"
+          width="50"
           color="#000"
           ariaLabel="line-wave-loading"
           wrapperStyle={{}}
           wrapperClass=""
-          firstLineColor="#000"
-          middleLineColor="#000"
-          lastLineColor="#000"
         />
       </div>
     )

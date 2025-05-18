@@ -123,26 +123,29 @@ export function ShippingTable() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-1">
-                        {authData?.type !== "driver" &&
-                        invoice.isConfirm === false ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
-                            onClick={() => handleFinish(invoice.id)}
-                          >
-                            <Truck className="h-4 w-4 text-black-600" />
-                            <span className="text-xs">Finalizar</span>
-                          </Button>
+                        {authData?.type !== "driver" ? (
+                          invoice.isConfirm === false ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="flex items-center gap-1 px-2 py-1 cursor-pointer"
+                              onClick={() => handleFinish(invoice.id)}
+                            >
+                              <Truck className="h-4 w-4 text-black-600" />
+                              <span className="text-xs">Finalizar</span>
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="flex items-center gap-1 px-2 py-1"
+                            >
+                              <Truck className="h-4 w-4 text-green-600" />
+                              <span className="text-xs">Finalizado</span>
+                            </Button>
+                          )
                         ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-1 px-2 py-1"
-                          >
-                            <Truck className="h-4 w-4 text-green-600" />
-                            <span className="text-xs">Finalizado</span>
-                          </Button>
+                          ""
                         )}
 
                         <Button

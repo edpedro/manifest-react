@@ -43,11 +43,13 @@ export const ShippingProvider = ({ children }: Props) => {
   const [shippingData, setShippingData] = useState<UIShippingDto>();
   const [shippingAllData, setShippingAllData] = useState<UIShippingDto[]>();
 
-  const { setLoadingFetch, setContext } = useLoading();
+  const { setLoadingFetch, setContext, isLoadingContext } = useLoading();
 
   useEffect(() => {
-    loadShipping();
-  }, []);
+    if (isLoadingContext) {
+      loadShipping();
+    }
+  }, [isLoadingContext]);
 
   async function loadShipping(): Promise<void> {
     try {

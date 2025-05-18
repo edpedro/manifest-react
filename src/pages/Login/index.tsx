@@ -20,7 +20,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { signIn, authenticated } = useAuth();
+  const { signIn, authenticated, authData } = useAuth();
   const { isLoading } = useLoading();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -29,7 +29,11 @@ export function LoginForm({
   });
 
   if (authenticated) {
-    navigate("/");
+    if (authData?.type === "driver") {
+      navigate("/romaneio");
+    } else {
+      navigate("/");
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

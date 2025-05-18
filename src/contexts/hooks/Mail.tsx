@@ -29,13 +29,15 @@ interface MailContextData {
 const MailContext = createContext<MailContextData>({} as MailContextData);
 
 export const MailProvider = ({ children }: Props) => {
-  const { setLoadingFetch, setContext } = useLoading();
+  const { setLoadingFetch, setContext, isLoadingContext } = useLoading();
   const [mailAllData, setMailAllData] = useState<UiMailDto[]>();
   const [mailData, setMailData] = useState<UiMailDto>();
 
   useEffect(() => {
-    loadMail();
-  }, []);
+    if (isLoadingContext) {
+      loadMail();
+    }
+  }, [isLoadingContext]);
 
   async function loadMail(): Promise<void> {
     try {
