@@ -345,6 +345,7 @@ export const ShipmentProvider = ({ children }: Props) => {
         if (shipmentId.length > 0) {
           await api.post("/shipping/manifest", data);
           setContext(true);
+          toast.success("Nota fiscal incluída!");
         }
       } catch (error) {
         toast.error(error.response?.data?.message);

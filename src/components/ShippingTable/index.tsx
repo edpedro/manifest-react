@@ -77,7 +77,7 @@ export function ShippingTable() {
                 <TableHead>Data Coleta</TableHead>
                 <TableHead>Previsão Coleta</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -151,7 +151,7 @@ export function ShippingTable() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
+                            className="flex items-center gap-1 px-2 py-1"
                           >
                             <MailCheck className="h-4 w-4 text-green-600" />
                             <span className="text-xs">Enviado</span>
@@ -171,7 +171,7 @@ export function ShippingTable() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="flex items-center gap-1 px-2 py-1 cursor-pointer"
+                            className="flex items-center gap-1 px-2 py-1"
                           >
                             <MailCheck className="h-4 w-4 text-green-600" />
                             <span className="text-xs">Enviado</span>
