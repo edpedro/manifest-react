@@ -8,7 +8,17 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { Button } from "../../components/ui/button";
-import { Pencil, Trash2, Mail, MailCheck, FilePlus, Truck } from "lucide-react";
+import { Badge } from "../../components/ui/badge";
+import {
+  Pencil,
+  Trash2,
+  Mail,
+  MailCheck,
+  FilePlus,
+  Truck,
+  CheckCircle2Icon,
+  LoaderIcon,
+} from "lucide-react";
 
 import { useShipping } from "../../contexts/hooks/Shipping";
 import { ModalCreateShipping } from "../ModalCreateShipping";
@@ -98,8 +108,18 @@ export function ShippingTable() {
                     <TableCell>{invoice.transport}</TableCell>
                     <TableCell>{formatDate(invoice.dispatch_date)}</TableCell>
                     <TableCell>{invoice.estimatedArrival}</TableCell>
-                    <TableCell className={`${statusClass}`}>
-                      {invoice.status}
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={`flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3 ${statusClass}`}
+                      >
+                        {invoice.status === "Expedido" ? (
+                          <CheckCircle2Icon className="text-green-500 dark:text-green-400" />
+                        ) : (
+                          <LoaderIcon />
+                        )}
+                        {invoice.status}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-1">
