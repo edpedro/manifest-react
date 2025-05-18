@@ -169,3 +169,14 @@ export interface FinishManifestDto {
   dispatch_date: string;
   dispatch_time?: string;
 }
+
+export interface CreateMailDto {
+  name: string;
+  email: string;
+}
+
+export interface UiMailDto {
+  id: number;
+  name: string;
+  email: string;
+}

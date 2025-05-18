@@ -11,6 +11,7 @@ import {
   SearchIcon,
   PieChart,
   FileText,
+  Mail,
 } from "lucide-react";
 
 import {
@@ -56,6 +57,11 @@ const data = {
       title: "Atualizar Expedição",
       url: "/expedition",
       icon: PieChart,
+    },
+    {
+      title: "Cadastrar Email",
+      url: "/mail",
+      icon: Mail,
     },
   ],
   navClouds: [

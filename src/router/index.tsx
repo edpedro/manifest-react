@@ -10,6 +10,7 @@ import { RegisterForm } from "../pages/Register";
 import PrivateRoutes from "../components/PrivateRoutes";
 import Shipping from "../pages/Shipping";
 import { ShippingInvoice } from "../pages/ShippingInvoice";
+import Mail from "../pages/Mail";
 
 const Routes = () => {
   return (
@@ -25,6 +26,7 @@ const Routes = () => {
         <Route path="/expedition" element={<ExpeditionExcel />} />
         <Route path="/romaneio" element={<Shipping />} />
         <Route path="/romaneio/invoice/:id" element={<ShippingInvoice />} />
+        <Route path="/mail" element={<Mail />} />
       </Route>
     </Router>
   );
