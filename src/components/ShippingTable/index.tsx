@@ -19,7 +19,7 @@ import {
   CheckCircle2Icon,
   LoaderIcon,
 } from "lucide-react";
-
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 import { useShipping } from "../../contexts/hooks/Shipping";
 import { ModalCreateShipping } from "../ModalCreateShipping";
 import { ModalDeleteShipping } from "../ModalDeleteShipping";
@@ -43,7 +43,6 @@ export function ShippingTable() {
 
   const sendMail = (id) => {
     handleSedMail(id);
-    handleFindIdShipping(id);
   };
 
   const handleFinish = (id) => {
@@ -68,10 +67,17 @@ export function ShippingTable() {
     handleFindIdShipping(id);
     navigate(`/romaneio/invoice/${id}`);
   };
-
   function formatDate(date: Date | string | null): string {
     if (!date) return "";
-    return new Date(date).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+
+    try {
+      const timeZone = "America/Sao_Paulo";
+      const zonedDate = toZonedTime(new Date(date), timeZone);
+      return formatInTimeZone(zonedDate, timeZone, "dd/MM/yyyy");
+    } catch (error) {
+      console.error("Erro ao formatar data:", error);
+      return "";
+    }
   }
 
   return (

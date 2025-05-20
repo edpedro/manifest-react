@@ -84,8 +84,8 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
         <SiteHeader />
         <form {...props} onSubmit={handleSearch}>
           <SidebarGroup className="py-1">
-            <span className="ml-2 block text-center font-bold">
-              Romaneio nº {id}
+            <span className="ml-2 block text-center font-bold mb-1">
+              Adicionar nota fiscal para Romaneio nº {id}
             </span>
             <SidebarGroupContent className="relative flex flex-col sm:flex-row max-w-lg items-center gap-2 sm:gap-4 sm:space-x-4 px-2 sm:px-0 sm:ml-2">
               <Label htmlFor="searchData" className="sr-only">

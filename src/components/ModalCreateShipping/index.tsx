@@ -13,6 +13,7 @@ import { Label } from "../ui/label";
 import { useShipping } from "../../contexts/hooks/Shipping";
 import { CreateShippingDto } from "../../types";
 import { cpf as cpfValidator } from "cpf-cnpj-validator";
+import * as dateFnsTz from "date-fns-tz";
 
 interface ShippingData {
   name: string;
@@ -20,7 +21,7 @@ interface ShippingData {
   placa: string;
   dispatch_date: string;
   transport: string;
-  estimatedArrival: string;
+  estimatedArrival?: string;
 }
 
 interface UIPropsModal {
@@ -43,7 +44,6 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     placa: "",
     dispatch_date: "",
     transport: "",
-    estimatedArrival: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,7 +56,6 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
         placa: shippingData.placa?.toUpperCase() || "",
         dispatch_date: formatDate(shippingData.dispatch_date) || "",
         transport: shippingData.transport?.toUpperCase() || "",
-        estimatedArrival: shippingData.estimatedArrival || "",
       });
     }
   }, [idUpdate, shippingData]);
@@ -181,9 +180,26 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
   const handleSubmit = () => {
     if (!validateForm()) return;
 
-    const formatEnvioDate = (date: string): string => {
+    const formatEnvioHora = (date: string): string => {
       const d = new Date(date);
-      return d.toISOString();
+
+      return new Intl.DateTimeFormat("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(d);
+    };
+    const formatEnvioDate = (dateStr: string): string => {
+      try {
+        const utcDate = dateFnsTz.toZonedTime(dateStr, "America/Sao_Paulo");
+        return dateFnsTz.formatInTimeZone(
+          utcDate,
+          "UTC",
+          "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        );
+      } catch (error) {
+        throw new Error(`Erro ao converter data: ${error.message}`);
+      }
     };
 
     const data: CreateShippingDto = {
@@ -192,7 +208,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
       placa: formData.placa.toUpperCase(),
       dispatch_date: formatEnvioDate(formData.dispatch_date),
       transport: formData.transport.toUpperCase(),
-      estimatedArrival: formData.estimatedArrival,
+      estimatedArrival: formatEnvioHora(formData.dispatch_date),
     };
 
     if (idUpdate && shippingData?.id) {
@@ -272,7 +288,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
           </div>
 
           <div>
-            <Label htmlFor="dispatch_date">Data de Saída</Label>
+            <Label htmlFor="dispatch_date">Previsão de Chegada</Label>
             <Input
               id="dispatch_date"
               type="datetime-local"
@@ -296,21 +312,6 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
             />
             {errors.transport && (
               <p className="text-red-500 text-sm">{errors.transport}</p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="estimatedArrival">Previsão de Chegada</Label>
-            <Input
-              id="estimatedArrival"
-              type="time"
-              value={formData.estimatedArrival}
-              onChange={handleChange}
-              autoComplete="off"
-              className={errors.estimatedArrival ? "border-red-500" : ""}
-            />
-            {errors.estimatedArrival && (
-              <p className="text-red-500 text-sm">{errors.estimatedArrival}</p>
             )}
           </div>
         </div>
