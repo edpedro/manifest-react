@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 import { toast } from "react-toastify";
-import { UIuser } from "../../types";
+import { UIuserList } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { useLoading } from "./Loanding";
 
@@ -22,7 +22,7 @@ interface UItoken {
 }
 
 interface AuthContextData {
-  authData?: UIuser;
+  authData?: UIuserList;
   token?: UItoken;
   authenticated: boolean;
   loadingAuth: boolean;
@@ -41,7 +41,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider = ({ children }: Props) => {
-  const [authData, setAuthData] = useState<UIuser>();
+  const [authData, setAuthData] = useState<UIuserList>();
   const [token, setToken] = useState<UItoken>();
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: Props) => {
 
       if (token && data) {
         const _token: UItoken = JSON.parse(token);
-        const _data: UIuser = JSON.parse(data);
+        const _data: UIuserList = JSON.parse(data);
 
         api.defaults.headers.authorization = `Bearer ${_token}`;
 

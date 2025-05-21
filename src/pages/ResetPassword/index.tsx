@@ -10,31 +10,27 @@ import {
 } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
-import { useAuth } from "../../contexts/hooks/Auth";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { Loader2 } from "lucide-react";
 import { useLoading } from "../../contexts/hooks/Loanding";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useUsers } from "../../contexts/hooks/User";
+import { ResetPasswordUser } from "../../types";
+import { useSearchParams } from "react-router-dom";
 
-export function LoginForm({
+export function ResetPassword({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { signIn, authenticated, authData } = useAuth();
+  const { resetPassword } = useUsers();
   const { isLoading } = useLoading();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
     password: "",
+    passwordContra: "",
   });
 
-  if (authenticated) {
-    if (authData?.type === "driver") {
-      navigate("/romaneio");
-    } else {
-      navigate("/");
-    }
-  }
+  const [searchParams] = useSearchParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,21 +43,35 @@ export function LoginForm({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!formData.username || !formData.password) {
-      toast.error("Favor preencher todos dados!");
+    const { password, passwordContra } = formData;
+
+    if (!password || !passwordContra) {
+      toast.error("Favor preencher todos os dados!");
+      return;
+    }
+
+    if (password !== passwordContra) {
+      toast.error("As senhas não coincidem!");
       return;
     }
 
     try {
-      await signIn(formData.username, formData.password);
-      // Limpa os campos após o login bem-sucedido
-      setFormData({
-        username: formData.username,
-        password: "",
-      });
+      const token = searchParams.get("token") ?? "";
+
+      if (!token) {
+        navigate("/login");
+      }
+
+      const data: ResetPasswordUser = {
+        token,
+        password,
+      };
+
+      await resetPassword(data);
+      setFormData({ password: "", passwordContra: "" });
+      navigate("/login"); // redireciona para login, por exemplo
     } catch (error) {
-      // Mantém os campos preenchidos em caso de erro para o usuário corrigir
-      console.error("Erro no login:", error);
+      console.error("Erro ao redefinir senha:", error);
     }
   };
 
@@ -72,35 +82,33 @@ export function LoginForm({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-center text-2xl">
-                Login
+                Recuperar Senha
               </CardTitle>
               <CardDescription>
-                Digite seu usuário abaixo para acessar sua conta
+                Digite e confirme a nova senha abaixo
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
-                    <Label htmlFor="username">Usuario</Label>
-                    <Input
-                      id="username"
-                      name="username"
-                      type="text"
-                      value={formData.username}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Senha</Label>
-                    </div>
+                    <Label htmlFor="password">Nova Senha</Label>
                     <Input
                       id="password"
                       name="password"
                       type="password"
                       value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="passwordContra">Confirmar Senha</Label>
+                    <Input
+                      id="passwordContra"
+                      name="passwordContra"
+                      type="password"
+                      value={formData.passwordContra}
                       onChange={handleChange}
                       required
                     />
@@ -113,25 +121,8 @@ export function LoginForm({
                     {isLoading && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    {isLoading ? "" : "Entrar"}
+                    {isLoading ? "Aguarde..." : "Alterar Senha"}
                   </Button>
-                </div>
-                <div className="mt-4 flex justify-center gap-6 text-sm text-center">
-                  <span>
-                    Esqueceu a senha?{" "}
-                    <a href="/reset" className="underline underline-offset-4">
-                      Recuperar senha
-                    </a>
-                  </span>
-                  <span>
-                    Não tem uma conta?{" "}
-                    <a
-                      href="/register"
-                      className="underline underline-offset-4"
-                    >
-                      Criar conta
-                    </a>
-                  </span>
                 </div>
               </form>
             </CardContent>

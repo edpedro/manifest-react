@@ -12,13 +12,16 @@ import Shipping from "../pages/Shipping";
 import { ShippingInvoice } from "../pages/ShippingInvoice";
 import Mail from "../pages/Mail";
 import User from "../pages/User";
+import { ResetPassword } from "../pages/ResetPassword";
+import { ResetMail } from "../pages/ResetMail";
 
 const Routes = () => {
   return (
     <Router>
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
-
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/reset" element={<ResetMail />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/" element={<Painel />} />
         <Route path="/search" element={<Search />} />

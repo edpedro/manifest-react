@@ -7,6 +7,7 @@ export interface UIuserList {
   password: string;
   type: string;
 }
+
 export interface CreateUser {
   first_name: string;
   last_name: string;
@@ -14,6 +15,15 @@ export interface CreateUser {
   username: string;
   password: string;
   type: string;
+}
+
+export interface ResetPasswordUser {
+  token: string;
+  password: string;
+}
+
+export interface EmailSend {
+  email: string;
 }
 
 export interface UserUpdateDto {

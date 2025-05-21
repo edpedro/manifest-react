@@ -8,7 +8,12 @@ import {
 } from "react";
 
 import { toast } from "react-toastify";
-import { UIuserList, UserUpdateDto } from "../../types";
+import {
+  EmailSend,
+  ResetPasswordUser,
+  UIuserList,
+  UserUpdateDto,
+} from "../../types";
 
 import api from "../../services/api";
 import { useLoading } from "./Loanding";
@@ -24,6 +29,8 @@ interface UserContextData {
   deleteUser: (id: string) => void;
   updateUser: (id: string, data: UserUpdateDto) => void;
   listUserFindOneData: (id: string) => void;
+  sendMailPassword: (email: EmailSend) => void;
+  resetPassword: (data: ResetPasswordUser) => void;
 }
 
 const UserContext = createContext<UserContextData>({} as UserContextData);
@@ -93,6 +100,32 @@ export const UsersProvider = ({ children }: Props) => {
     }
   }, []);
 
+  const sendMailPassword = useCallback(async (email: EmailSend) => {
+    try {
+      setLoadingFetch(true);
+      await api.post("/users/forgot-password", email);
+
+      toast.success("Email enviado com sucesso.");
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoadingFetch(false);
+    }
+  }, []);
+
+  const resetPassword = useCallback(async (data: ResetPasswordUser) => {
+    try {
+      setLoadingFetch(true);
+      await api.patch("/users/reset-password", data);
+
+      toast.success("Senha alterada com sucesso!");
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoadingFetch(false);
+    }
+  }, []);
+
   return (
     <UserContext.Provider
       value={{
@@ -102,6 +135,8 @@ export const UsersProvider = ({ children }: Props) => {
         lisUserData,
         listAllUserData,
         deleteUser,
+        sendMailPassword,
+        resetPassword,
       }}
     >
       {children}
