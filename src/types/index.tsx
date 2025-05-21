@@ -1,12 +1,29 @@
-export interface UIuser {
-  id?: string;
-  first_name?: string;
+export interface UIuserList {
+  id: string;
+  first_name: string;
   last_name: string;
   email: string;
   username: string;
   password: string;
   type: string;
 }
+export interface CreateUser {
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  password: string;
+  type: string;
+}
+
+export interface UserUpdateDto {
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  type: string;
+}
+
 export interface SearchDto {
   searchData: string;
 }

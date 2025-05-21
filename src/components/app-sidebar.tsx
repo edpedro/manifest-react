@@ -12,6 +12,7 @@ import {
   PieChart,
   FileText,
   Mail,
+  CircleUser,
 } from "lucide-react";
 
 import {
@@ -62,6 +63,11 @@ const data = {
       title: "Cadastrar Email",
       url: "/mail",
       icon: Mail,
+    },
+    {
+      title: "Usuários",
+      url: "/user",
+      icon: CircleUser,
     },
   ],
   navClouds: [
@@ -125,7 +131,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
 
     if (role === "user") {
-      return item.url !== "/mail";
+      return (
+        item.url !== "/mail" &&
+        item.url !== "/expedition" &&
+        item.url !== "/user"
+      );
     }
 
     return true;
