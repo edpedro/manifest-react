@@ -43,12 +43,11 @@ export function ModalDisplay({ openDisplay, setOpenDisplay }: UIPropsModal) {
       const year = d.getUTCFullYear();
       const month = String(d.getUTCMonth() + 1).padStart(2, "0");
       const day = String(d.getUTCDate()).padStart(2, "0");
-      const hours = String(d.getUTCHours()).padStart(2, "0");
-      const minutes = String(d.getUTCMinutes()).padStart(2, "0");
-      return `${year}-${month}-${day}T${hours}:${minutes}`;
+      return `${year}-${month}-${day}`;
     }
 
     if (openDisplay && shipmentData) {
+      console.log(shipmentData);
       setFormData({
         name: shipmentData.name || "",
         transport: shipmentData.transport || "",
@@ -120,7 +119,7 @@ export function ModalDisplay({ openDisplay, setOpenDisplay }: UIPropsModal) {
             </Label>
             <Input
               id="dispatch_date"
-              type="datetime-local"
+              type="date"
               value={formData.dispatch_date}
               onChange={handleChange}
               className="col-span-3"
