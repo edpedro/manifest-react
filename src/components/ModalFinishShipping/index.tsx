@@ -88,7 +88,7 @@ export function ModalFinishShipping({
     <Dialog open={openFinish} onOpenChange={setOpenFinish}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cdastrar Romaneio</DialogTitle>
+          <DialogTitle>Finalizar Expedição</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
