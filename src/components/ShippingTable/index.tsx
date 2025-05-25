@@ -103,6 +103,8 @@ export function ShippingTable() {
                   statusClass = "bg-yellow-300";
                 } else if (invoice.status === "Expedido") {
                   statusClass = "bg-green-200";
+                } else if (invoice.status === "Conferência") {
+                  statusClass = "bg-blue-200";
                 } else {
                   statusClass = "bg-gray-200";
                 }

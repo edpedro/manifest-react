@@ -8,11 +8,12 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
-import { Trash2 } from "lucide-react";
+import { CheckCircle2Icon, LoaderIcon, Trash2 } from "lucide-react";
 import { useShipment } from "../../contexts/hooks/Shipment";
 import { useShipping } from "../../contexts/hooks/Shipping";
 import { ModalDeleteInvoice } from "../ModalDeleteInvoice";
 import { DeletarManifestDto, DeleteShipmentDto } from "../../types";
+import { Badge } from "../ui/badge";
 
 interface UIPropsModal {
   id: number;
@@ -64,16 +65,19 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
                   <TableHead className="px-2 py-1">NF</TableHead>
                   <TableHead className="px-2 py-1">Destino</TableHead>
                   <TableHead className="px-2 py-1">Status</TableHead>
-                  <TableHead className="px-2 py-1 text-right">Ações</TableHead>
+                  <TableHead className="px-2 py-1">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {shippingData.shipmentShipping.map((invoice, index) => {
                   let statusClass = "";
+
                   if (invoice.shipment.status === "Pendente") {
                     statusClass = "bg-yellow-300";
                   } else if (invoice.shipment.status === "Expedido") {
                     statusClass = "bg-green-200";
+                  } else if (invoice.shipment.status === "Em romaneio") {
+                    statusClass = "bg-blue-200";
                   } else {
                     statusClass = "bg-gray-200";
                   }
@@ -92,10 +96,20 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
                       <TableCell className="px-2 py-1">
                         {invoice.shipment.destination}
                       </TableCell>
-                      <TableCell className={`px-2 py-1 ${statusClass}`}>
-                        {invoice.shipment.status}
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={`flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3 ${statusClass}`}
+                        >
+                          {invoice.shipment.status === "Expedido" ? (
+                            <CheckCircle2Icon className="text-green-500 dark:text-green-400" />
+                          ) : (
+                            <LoaderIcon />
+                          )}
+                          {invoice.shipment.status}
+                        </Badge>
                       </TableCell>
-                      <TableCell className="px-2 py-1 text-right">
+                      <TableCell className="px-2 py-1">
                         <Button
                           variant="ghost"
                           size="sm"

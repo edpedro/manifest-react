@@ -8,11 +8,18 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { Button } from "../../components/ui/button";
-import { Pencil, Trash2, Eye } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Eye,
+  CheckCircle2Icon,
+  LoaderIcon,
+} from "lucide-react";
 import { ModalUpdate } from "../ModalUpdate";
 import { ModalDelete } from "../ModalDelete";
 import { useShipment } from "../../contexts/hooks/Shipment";
 import { ModalDisplay } from "../ModalDisplay";
+import { Badge } from "../ui/badge";
 
 export function ShipmentTable() {
   const { searchData, setDataSearch, handleFindshipment } = useShipment();
@@ -68,18 +75,19 @@ export function ShipmentTable() {
             </TableHeader>
             <TableBody>
               {searchData?.map((invoice) => {
-                // Definir a classe de fundo para o status
                 let statusClass = "";
                 if (invoice.status === "Pendente") {
-                  statusClass = "bg-yellow-300"; // Amarelo claro
+                  statusClass = "bg-yellow-300";
                 } else if (invoice.status === "Expedido") {
-                  statusClass = "bg-green-200"; // Verde claro
+                  statusClass = "bg-green-200";
+                } else if (invoice.status === "Em romaneio") {
+                  statusClass = "bg-blue-200";
                 } else {
-                  statusClass = "bg-gray-200"; // Cor padrão para outros status
+                  statusClass = "bg-gray-200";
                 }
 
                 function formatDate(date: Date | string | null): string {
-                  if (!date) return ""; // Retorna vazio se for null
+                  if (!date) return "";
                   return new Date(date).toLocaleDateString("pt-BR", {
                     timeZone: "UTC",
                   });
@@ -104,8 +112,18 @@ export function ShipmentTable() {
                         })}
                     </TableCell>
                     <TableCell>{invoice.category}</TableCell>
-                    <TableCell className={`p-2 ${statusClass}`}>
-                      {invoice.status}
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={`flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3 ${statusClass}`}
+                      >
+                        {invoice.status === "Expedido" ? (
+                          <CheckCircle2Icon className="text-green-500 dark:text-green-400" />
+                        ) : (
+                          <LoaderIcon />
+                        )}
+                        {invoice.status}
+                      </Badge>
                     </TableCell>
                     <TableCell>{invoice.user.first_name}</TableCell>
                     <TableCell>
