@@ -56,7 +56,7 @@ export function LoginForm({
       await signIn(formData.username, formData.password);
       // Limpa os campos após o login bem-sucedido
       setFormData({
-        username: formData.username,
+        username: formData.username.toLowerCase(),
         password: "",
       });
     } catch (error) {
@@ -89,6 +89,7 @@ export function LoginForm({
                       type="text"
                       value={formData.username}
                       onChange={handleChange}
+                      className="lowercase"
                       required
                     />
                   </div>
