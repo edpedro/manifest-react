@@ -276,6 +276,7 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Pendente">Pendente</SelectItem>
+                <SelectItem value="Em romaneio">Em romaneio</SelectItem>
                 <SelectItem value="Expedido">Expedido</SelectItem>
               </SelectContent>
             </Select>
