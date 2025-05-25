@@ -346,10 +346,8 @@ export const ShipmentProvider = ({ children }: Props) => {
           try {
             setLoadingFetch(true);
             await api.post("/shipping/manifest", data);
-
             setContext(true);
-
-            toast.success("Nota fiscal incluída!");
+            toast.success("Nota fiscal incluída com sucesso!");
           } catch (error) {
             toast.error(error.response?.data?.message);
           } finally {

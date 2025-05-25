@@ -4,6 +4,8 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useCallback,
+  useRef,
 } from "react";
 
 import { toast } from "react-toastify";
@@ -47,33 +49,115 @@ export const AuthProvider = ({ children }: Props) => {
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   const { setLoading, setLoadingFetch } = useLoading();
-
   const navigate = useNavigate();
+
+  const lastCheckRef = useRef<number>(0);
+  const isCheckingRef = useRef<boolean>(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const CHECK_INTERVAL = 30000; // 30 segundos
+  const THROTTLE_DELAY = 1000; // 1 segundo
 
   useEffect(() => {
     loadStorageData();
   }, []);
+
+  const checkUserRoleChange = useCallback(async () => {
+    if (!authData || isCheckingRef.current) return;
+
+    const now = Date.now();
+    const timeSinceLastCheck = now - lastCheckRef.current;
+
+    if (timeSinceLastCheck < CHECK_INTERVAL) return;
+
+    try {
+      isCheckingRef.current = true;
+
+      const response = await api.get(`users/${authData.id}`);
+
+      if (response.data.type !== authData.type) {
+        toast.warn("Sua permissão foi alterada. Faça login novamente.");
+        await signOut();
+        navigate("/login");
+      }
+
+      lastCheckRef.current = now;
+    } catch (error) {
+      console.error(
+        "Erro ao verificar mudança de role:",
+        error?.message || error
+      );
+    } finally {
+      isCheckingRef.current = false;
+    }
+  }, [authData]);
+
+  const handleUserActivity = useCallback(() => {
+    if (!authenticated) return;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      checkUserRoleChange();
+    }, THROTTLE_DELAY);
+  }, [authenticated, checkUserRoleChange]);
+
+  useEffect(() => {
+    if (!authenticated) return;
+
+    const events = ["keydown", "mousemove"];
+
+    events.forEach((event) => {
+      window.addEventListener(event, handleUserActivity, { passive: true });
+    });
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden && authenticated) {
+        handleUserActivity();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, handleUserActivity);
+      });
+
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [authenticated, handleUserActivity]);
 
   async function loadStorageData(): Promise<void> {
     try {
       setLoadingAuth(true);
       setLoadingFetch(true);
 
-      const token = localStorage.getItem("@token");
-      const data = localStorage.getItem("@data");
+      const tokenStorage = localStorage.getItem("@token");
+      const userStorage = localStorage.getItem("@data");
 
-      if (token && data) {
-        const _token: UItoken = JSON.parse(token);
-        const _data: UIuserList = JSON.parse(data);
+      if (tokenStorage && userStorage) {
+        const _token: UItoken = JSON.parse(tokenStorage);
+        const _data: UIuserList = JSON.parse(userStorage);
 
         api.defaults.headers.authorization = `Bearer ${_token}`;
 
         setAuthenticated(true);
         setToken(_token);
         setAuthData(_data);
+        lastCheckRef.current = Date.now();
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(
+        "Erro ao carregar dados do storage:",
+        error?.message || error
+      );
     } finally {
       setLoadingFetch(false);
       setLoadingAuth(false);
@@ -86,28 +170,24 @@ export const AuthProvider = ({ children }: Props) => {
 
       const {
         data: { payload, token },
-      } = await api.post("/auth/login", {
-        username,
-        password,
-      });
+      } = await api.post("/auth/login", { username, password });
 
       setAuthData(payload);
       setToken(token);
       setAuthenticated(true);
+
       localStorage.setItem("@data", JSON.stringify(payload));
       localStorage.setItem("@token", JSON.stringify(token));
+
       api.defaults.headers.authorization = `Bearer ${token}`;
+      lastCheckRef.current = Date.now();
 
       toast.success("Login efetuado com sucesso!");
 
-      if (payload.type === "driver") {
-        navigate("/romaneio");
-      } else {
-        navigate("/");
-      }
+      navigate(payload.type === "driver" ? "/romaneio" : "/");
     } catch (error) {
-      console.log(error.message);
-      toast.error("Login e Senha invalida!");
+      console.error("Erro ao fazer login:", error?.message || error);
+      toast.error("Login ou senha inválidos!");
     } finally {
       setLoading(false);
     }
@@ -134,16 +214,21 @@ export const AuthProvider = ({ children }: Props) => {
       });
 
       navigate("/login");
-
       toast.success("Cadastro efetuado com sucesso!");
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(
+        error?.response?.data?.message || "Erro ao cadastrar usuário."
+      );
     } finally {
       setLoading(false);
     }
   }
 
   async function signOut() {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     setAuthData(undefined);
     setAuthenticated(false);
 
@@ -151,6 +236,9 @@ export const AuthProvider = ({ children }: Props) => {
 
     localStorage.removeItem("@data");
     localStorage.removeItem("@token");
+
+    lastCheckRef.current = 0;
+    isCheckingRef.current = false;
   }
 
   return (

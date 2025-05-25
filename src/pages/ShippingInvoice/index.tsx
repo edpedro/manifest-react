@@ -104,7 +104,7 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
                 <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
               </div>
               <div className="flex flex-row items-center ">
-                <Button type="submit" className="cursor-pointer mr-1">
+                <Button type="submit" className="cursor-pointer">
                   Adicionar
                 </Button>
                 <Button
@@ -114,6 +114,12 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
                 >
                   Finalizar
                 </Button>
+                {shippingData?.shipmentShipping &&
+                  shippingData.shipmentShipping?.length > 0 && (
+                    <span className="ml-2 block text-center mt-2">
+                      Total: {shippingData.shipmentShipping.length}
+                    </span>
+                  )}
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
