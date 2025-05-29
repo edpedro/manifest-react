@@ -32,6 +32,9 @@ interface ShipmentContextData {
   shipmentData?: ShipmentDto;
   dashData?: UIDashboard;
   createShipment?: CreateShipmentRequest;
+  invoicePendingData?: ShipmentDto[];
+  lighthouse?: string;
+  categoryData?: string[];
   search: (SearchData: SearchDto) => Promise<void>;
   setDataSearch: (data: ShipmentDto[]) => void;
   handleFindshipment: (id: number) => Promise<void>;
@@ -45,6 +48,7 @@ interface ShipmentContextData {
   extratorDateExcel: (data: UIExtratorDateExcel) => Promise<void>;
   extratorSTSupplysExcel: (data: UIExtratorExcel) => Promise<void>;
   loadDashboard: () => Promise<void>;
+  loadInvoicePendingShipping: () => Promise<void>;
   searchInvoiceShipping: (
     SearchData: SearchDto,
     shippingId: number
@@ -60,6 +64,11 @@ export const ShipmentProvider = ({ children }: Props) => {
   const [shipmentData, setShipmentData] = useState<ShipmentDto>();
   const [createShipment, createSetShipment] = useState<CreateShipmentRequest>();
   const [dashData, setDashData] = useState<UIDashboard>();
+  const [invoicePendingData, setInvoicePendingData] = useState<ShipmentDto[]>(
+    []
+  );
+  const [lighthouse, setLighthouse] = useState<string>();
+  const [categoryData, setCategoryData] = useState<string[]>([]);
 
   const { setLoadingFetch, setDashboard, setContext, isLoadingContext } =
     useLoading();
@@ -67,6 +76,7 @@ export const ShipmentProvider = ({ children }: Props) => {
   useEffect(() => {
     if (isLoadingContext) {
       loadDashboard();
+      loadInvoicePendingShipping();
       setContext(false);
     }
   }, [isLoadingContext]);
@@ -325,6 +335,37 @@ export const ShipmentProvider = ({ children }: Props) => {
     }
   }
 
+  async function loadInvoicePendingShipping(): Promise<void> {
+    try {
+      setDashboard(true);
+      const result = await api.get("/shipment/invoice/pending");
+
+      let newCor: string = "green";
+
+      for (const item of result.data) {
+        if (item.cor === "red") {
+          newCor = "red";
+          break;
+        } else if (item.cor === "yellow") {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          newCor = "yellow";
+        }
+      }
+
+      const category = [
+        ...new Set(result.data.map((item) => item.category)),
+      ] as string[];
+
+      setInvoicePendingData(result.data);
+      setLighthouse(newCor);
+      setCategoryData(category);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setDashboard(false);
+    }
+  }
+
   const searchInvoiceShipping = useCallback(
     async (SearchData: SearchDto, id: number) => {
       try {
@@ -384,6 +425,10 @@ export const ShipmentProvider = ({ children }: Props) => {
         loadDashboard,
         dashData,
         searchInvoiceShipping,
+        loadInvoicePendingShipping,
+        invoicePendingData,
+        lighthouse,
+        categoryData,
       }}
     >
       {children}

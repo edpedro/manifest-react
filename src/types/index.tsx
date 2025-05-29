@@ -56,6 +56,7 @@ export interface ShipmentDto {
   dispatch_time?: string | null;
   status?: string | null;
   observation?: string | null;
+  cor?: string;
   user: {
     id: string;
     first_name: string;
