@@ -9,7 +9,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
-import React from "react";
+
+import Logo from "../assets/logo.jpeg";
 
 import { Link } from "react-router-dom";
 
@@ -27,12 +28,11 @@ export function NavMain({
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
-            {/* <SidebarMenuButton
-              tooltip="Painel"
-              className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
-            > */}
-            {/* <span>Manist</span> */}
-            {/* </SidebarMenuButton> */}
+            <img
+              src={Logo}
+              alt="logo"
+              className="w-full h-6 object-contain rounded-t-2xl -mt-2 mb-2"
+            />
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
