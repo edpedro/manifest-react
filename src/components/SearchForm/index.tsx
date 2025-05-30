@@ -48,13 +48,15 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
       <SidebarGroup className="py-1">
         <SidebarGroupContent className="relative flex flex-col sm:flex-row max-w-lg items-center gap-2 sm:gap-4 sm:space-x-4 px-2 sm:px-0 sm:ml-2">
           <Label htmlFor="searchData" className="sr-only">
-            Search
+            Pesquisar
           </Label>
           <div className="relative w-full sm:w-auto">
             <SidebarInput
               id="searchData"
               name="searchData"
               type="text"
+              inputMode="numeric"
+              pattern="\d*"
               value={formData.searchData}
               onChange={handleChange}
               placeholder="Procurar... ST, Fornecimento e Nota Fiscal"

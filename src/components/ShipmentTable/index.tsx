@@ -63,14 +63,16 @@ export function ShipmentTable() {
                 <TableHead>Fornecimento</TableHead>
                 <TableHead>NF</TableHead>
                 <TableHead>Data NF</TableHead>
-                <TableHead>Destino</TableHead>
+                <TableHead>Destinatário</TableHead>
+                <TableHead>Cidade</TableHead>
+                <TableHead>UF</TableHead>
                 <TableHead>Transportadora</TableHead>
                 <TableHead>Modal</TableHead>
                 <TableHead>Valor</TableHead>
                 <TableHead>Categoria</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Usuario</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
+                <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -102,6 +104,8 @@ export function ShipmentTable() {
                       {formatDate(invoice.invoice_issue_date)}
                     </TableCell>
                     <TableCell>{invoice.destination}</TableCell>
+                    <TableCell>{invoice.city}</TableCell>
+                    <TableCell>{invoice.uf}</TableCell>
                     <TableCell>{invoice.carrier}</TableCell>
                     <TableCell>{invoice.transport_mode}</TableCell>
                     <TableCell>

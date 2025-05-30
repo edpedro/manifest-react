@@ -45,6 +45,8 @@ export interface ShipmentDto {
   invoice_number: string;
   invoice_issue_date: Date;
   destination: string;
+  city: string;
+  uf: string;
   carrier: string;
   transport_mode: string;
   Valeu_invoice: number | null;
@@ -69,6 +71,8 @@ export interface UpdateShipmentDto {
   invoice_number: string;
   invoice_issue_date: Date;
   destination: string;
+  city: string;
+  uf: string;
   carrier: string;
   transport_mode: string;
   Valeu_invoice: number | null;
@@ -103,6 +107,8 @@ export interface UpdateExpeditionShipmentDto {
   invoice_number: string;
   invoice_issue_date: Date;
   destination: string;
+  city: string;
+  uf: string;
   carrier: string;
   transport_mode: string;
   Valeu_invoice: number;
@@ -164,6 +170,8 @@ export interface UIShippingDto {
       invoice_number: string;
       invoice_issue_date: Date;
       destination: string;
+      city: string;
+      uf: string;
       carrier: string;
       transport_mode: string;
       Valeu_invoice: number;

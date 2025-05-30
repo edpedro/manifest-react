@@ -90,7 +90,9 @@ export function ModalDisplayPendingShipping({ open, setOpen }: UIPropsModal) {
                   <TableHead>Fornecimento</TableHead>
                   <TableHead>NF</TableHead>
                   <TableHead>Data NF</TableHead>
-                  <TableHead>Destino</TableHead>
+                  <TableHead>Destinatário</TableHead>
+                  <TableHead>Cidade</TableHead>
+                  <TableHead>UF</TableHead>
                   <TableHead>Transportadora</TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Status</TableHead>
@@ -127,6 +129,8 @@ export function ModalDisplayPendingShipping({ open, setOpen }: UIPropsModal) {
                         {formatDate(invoice.invoice_issue_date)}
                       </TableCell>
                       <TableCell>{invoice.destination}</TableCell>
+                      <TableCell>{invoice.city}</TableCell>
+                      <TableCell>{invoice.uf}</TableCell>
                       <TableCell>{invoice.carrier}</TableCell>
                       <TableCell>{invoice.category}</TableCell>
                       <TableCell>

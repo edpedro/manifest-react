@@ -23,7 +23,9 @@ export function UploadTable() {
                 <TableHead>Fornecimento</TableHead>
                 <TableHead>NF</TableHead>
                 <TableHead>Data NF</TableHead>
-                <TableHead>Destino</TableHead>
+                <TableHead>Destinatário</TableHead>
+                <TableHead>Cidade</TableHead>
+                <TableHead>UF</TableHead>
                 <TableHead>Transportadora</TableHead>
                 <TableHead>Modal</TableHead>
                 <TableHead>Valor</TableHead>
@@ -60,6 +62,8 @@ export function UploadTable() {
                       {formatDate(invoice.invoice_issue_date)}
                     </TableCell>
                     <TableCell>{invoice.destination}</TableCell>
+                    <TableCell>{invoice.city}</TableCell>
+                    <TableCell>{invoice.uf}</TableCell>
                     <TableCell>{invoice.carrier}</TableCell>
                     <TableCell>{invoice.transport_mode}</TableCell>
                     <TableCell>
