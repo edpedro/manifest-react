@@ -28,6 +28,7 @@ interface UserContextData {
   listAllUserData: () => void;
   deleteUser: (id: string) => void;
   updateUser: (id: string, data: UserUpdateDto) => void;
+
   listUserFindOneData: (id: string) => void;
   sendMailPassword: (email: EmailSend) => void;
   resetPassword: (data: ResetPasswordUser) => void;

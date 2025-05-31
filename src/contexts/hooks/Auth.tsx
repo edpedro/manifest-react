@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 import { toast } from "react-toastify";
-import { UIuserList } from "../../types";
+import { UIuserList, UserUpdateDto } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { useLoading } from "./Loanding";
 
@@ -29,6 +29,7 @@ interface AuthContextData {
   authenticated: boolean;
   loadingAuth: boolean;
   signIn: (username: string, password: string) => Promise<void>;
+  updateUserAuth: (id: string, data: UserUpdateDto) => void;
   signOut: () => Promise<void>;
   register: (
     first_name: string,
@@ -241,6 +242,28 @@ export const AuthProvider = ({ children }: Props) => {
     isCheckingRef.current = false;
   }
 
+  const updateUserAuth = useCallback(
+    async (id: string, newData: UserUpdateDto) => {
+      try {
+        setLoadingFetch(true);
+        const result = await api.patch(`/users/${id}`, newData);
+
+        localStorage.removeItem("@data");
+
+        localStorage.setItem("@data", JSON.stringify(result.data));
+
+        setAuthData(result.data);
+
+        toast.success("Atualizado com sucesso.");
+      } catch (error) {
+        toast.error(error.response?.data?.message);
+      } finally {
+        setLoadingFetch(false);
+      }
+    },
+    []
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -251,6 +274,7 @@ export const AuthProvider = ({ children }: Props) => {
         signOut,
         register,
         loadingAuth,
+        updateUserAuth,
       }}
     >
       {children}

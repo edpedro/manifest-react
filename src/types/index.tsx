@@ -31,7 +31,7 @@ export interface UserUpdateDto {
   last_name: string;
   email: string;
   username: string;
-  type: string;
+  type?: string;
 }
 
 export interface SearchDto {
