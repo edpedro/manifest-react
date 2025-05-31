@@ -30,9 +30,9 @@ export function NavUser() {
 
   const [open, setOpen] = useState(false);
 
-  const handleEdit = (id?: string) => {
+  const handleEdit = async (id?: string) => {
     if (id) {
-      listUserFindOneData(id);
+      await listUserFindOneData(id);
       setOpen(true);
     }
   };

@@ -38,16 +38,29 @@ export function ModalEditUser({ open, setOpen }: UIPropsModal) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Limpar dados quando o modal for fechado
   useEffect(() => {
-    if (userFindData) {
+    if (!open) {
       setFormData({
-        first_name: userFindData.first_name,
-        last_name: userFindData.last_name,
-        email: userFindData.email,
-        username: userFindData.username,
+        first_name: "",
+        last_name: "",
+        email: "",
+        username: "",
+      });
+      setErrors({});
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (userFindData && open) {
+      setFormData({
+        first_name: userFindData.first_name || "",
+        last_name: userFindData.last_name || "",
+        email: userFindData.email || "",
+        username: userFindData.username || "",
       });
     }
-  }, [userFindData]);
+  }, [userFindData, open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -100,7 +113,7 @@ export function ModalEditUser({ open, setOpen }: UIPropsModal) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cadastrar Romaneio</DialogTitle>
+          <DialogTitle>Editar Usuário</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">

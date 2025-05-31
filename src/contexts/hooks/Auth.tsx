@@ -246,6 +246,7 @@ export const AuthProvider = ({ children }: Props) => {
     async (id: string, newData: UserUpdateDto) => {
       try {
         setLoadingFetch(true);
+        setLoadingAuth(true);
         const result = await api.patch(`/users/${id}`, newData);
 
         localStorage.removeItem("@data");
@@ -258,6 +259,7 @@ export const AuthProvider = ({ children }: Props) => {
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
+        setLoadingAuth(false);
         setLoadingFetch(false);
       }
     },
