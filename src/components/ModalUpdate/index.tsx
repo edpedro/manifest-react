@@ -26,6 +26,8 @@ interface ShipmentData {
   invoice_number: string;
   invoice_issue_date: string;
   destination: string;
+  city: string;
+  uf: string;
   carrier: string;
   transport_mode: string;
   Valeu_invoice: number;
@@ -48,6 +50,8 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
     invoice_number: "",
     invoice_issue_date: "",
     destination: "",
+    city: "",
+    uf: "",
     carrier: "",
     transport_mode: "",
     Valeu_invoice: 0,
@@ -75,6 +79,8 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
         invoice_number: shipmentData.invoice_number || "",
         invoice_issue_date: formatDate(shipmentData.invoice_issue_date || ""),
         destination: shipmentData.destination || "",
+        city: shipmentData.city || "",
+        uf: shipmentData.uf || "",
         carrier: shipmentData.carrier || "",
         transport_mode: shipmentData.transport_mode || "",
         Valeu_invoice: shipmentData.Valeu_invoice || 0,
@@ -109,6 +115,8 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
           invoice_number: formData.invoice_number,
           invoice_issue_date: new Date(formData.invoice_issue_date),
           destination: formData.destination.toUpperCase(),
+          city: formData.city.toUpperCase(),
+          uf: formData.uf.toUpperCase(),
           carrier: formData.carrier.toUpperCase(),
           transport_mode: formData.transport_mode.toUpperCase(),
           Valeu_invoice: formData.Valeu_invoice,
@@ -187,11 +195,33 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="destination" className="text-right">
-              Destino
+              Destinatário
             </Label>
             <Input
               id="destination"
               value={formData.destination}
+              onChange={handleChange}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="city" className="text-right">
+              Cidade
+            </Label>
+            <Input
+              id="city"
+              value={formData.city}
+              onChange={handleChange}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="uf" className="text-right">
+              UF
+            </Label>
+            <Input
+              id="uf"
+              value={formData.uf}
               onChange={handleChange}
               className="col-span-3"
             />
@@ -255,10 +285,11 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
                 <SelectValue placeholder="Selecione a categoria" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="MKT">MKT</SelectItem>
-                <SelectItem value="FIXA">FIXA</SelectItem>
-                <SelectItem value="OSP">OSP</SelectItem>
-                <SelectItem value="OUTROS">FERRAMENTAL</SelectItem>
+                <SelectItem value="CASA CLIENTE">CASA CLIENTE</SelectItem>
+                <SelectItem value="REDE EXTERNA">REDE EXTERNA</SelectItem>
+                <SelectItem value="FERRAMENTAL">FERRAMENTAL</SelectItem>
+                <SelectItem value="MARKETING">MARKETING</SelectItem>
+                <SelectItem value="ENGENHARIA">ENGENHARIA</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -270,6 +301,7 @@ export function ModalUpdate({ openUpdate, setOpenUpdate }: UIPropsModal) {
             <Select
               value={formData.status}
               onValueChange={(value) => handleSelectChange("status", value)}
+              disabled={true}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Selecione o status" />

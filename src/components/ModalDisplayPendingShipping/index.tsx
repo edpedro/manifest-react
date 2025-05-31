@@ -52,7 +52,7 @@ export function ModalDisplayPendingShipping({ open, setOpen }: UIPropsModal) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[1000px] h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
-          <div className="relative flex flex-col sm:flex-row sm:items-center w-full gap-2 sm:gap-0">
+          <div className="w-full flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">Categoria</span>
               <Select
@@ -68,16 +68,18 @@ export function ModalDisplayPendingShipping({ open, setOpen }: UIPropsModal) {
                   <SelectItem value="Todos">Todos</SelectItem>
                   {categoryData &&
                     categoryData.map((category) => (
-                      <SelectItem value={category}>{category}</SelectItem>
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
                     ))}
                 </SelectContent>
               </Select>
             </div>
-            <DialogTitle className="text-center sm:text-left w-full sm:w-auto">
+            <DialogTitle className="text-left sm:text-right w-full sm:w-auto ml-10">
               Relatório de Notas Fiscais
             </DialogTitle>
-            <DialogDescription></DialogDescription>
           </div>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto mt-4 min-h-0">

@@ -216,3 +216,5 @@ export interface UiMailDto {
   name: string;
   email: string;
 }
+
+export type Status = "gray" | "success" | "warning" | "error";

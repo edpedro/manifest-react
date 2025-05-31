@@ -12,6 +12,7 @@ import {
   CreateShipmentRequest,
   SearchDto,
   ShipmentDto,
+  Status,
   UIDashboard,
   UIExtratorDateExcel,
   UIExtratorExcel,
@@ -33,7 +34,7 @@ interface ShipmentContextData {
   dashData?: UIDashboard;
   createShipment?: CreateShipmentRequest;
   invoicePendingData?: ShipmentDto[];
-  lighthouse?: string;
+  lighthouse: string;
   categoryData?: string[];
   search: (SearchData: SearchDto) => Promise<void>;
   setDataSearch: (data: ShipmentDto[]) => void;
@@ -67,7 +68,7 @@ export const ShipmentProvider = ({ children }: Props) => {
   const [invoicePendingData, setInvoicePendingData] = useState<ShipmentDto[]>(
     []
   );
-  const [lighthouse, setLighthouse] = useState<string>();
+  const [lighthouse, setLighthouse] = useState<Status>("success");
   const [categoryData, setCategoryData] = useState<string[]>([]);
 
   const { setLoadingFetch, setDashboard, setContext, isLoadingContext } =
@@ -340,15 +341,15 @@ export const ShipmentProvider = ({ children }: Props) => {
       setDashboard(true);
       const result = await api.get("/shipment/invoice/pending");
 
-      let newCor: string = "green";
+      let newCor: Status = "success";
 
       for (const item of result.data) {
         if (item.cor === "red") {
-          newCor = "red";
+          newCor = "error";
           break;
         } else if (item.cor === "yellow") {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          newCor = "yellow";
+          newCor = "warning";
         }
       }
 
