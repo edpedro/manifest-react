@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "./ui/sidebar";
 
-import Logo from "../assets/logo.jpeg";
+import Logo from "../assets/logo.png";
 
 import { Link } from "react-router-dom";
 
