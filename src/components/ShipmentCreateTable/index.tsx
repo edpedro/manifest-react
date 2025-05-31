@@ -57,75 +57,77 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
         shippingData.shipmentShipping &&
         shippingData.shipmentShipping.length > 0 && (
           <>
-            <Table className="text-sm">
-              <TableHeader>
-                <TableRow className="h-8">
-                  <TableHead className="px-2 py-1">ST</TableHead>
-                  <TableHead className="px-2 py-1">Fornecimento</TableHead>
-                  <TableHead className="px-2 py-1">NF</TableHead>
-                  <TableHead className="px-2 py-1">Destino</TableHead>
-                  <TableHead className="px-2 py-1">Status</TableHead>
-                  <TableHead className="px-2 py-1">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {shippingData.shipmentShipping.map((invoice, index) => {
-                  let statusClass = "";
+            <div className="max-h-[70vh] overflow-y-auto overflow-x-auto border rounded-md">
+              <Table className="text-sm min-w-[600px]">
+                <TableHeader>
+                  <TableRow className="h-8">
+                    <TableHead className="px-2 py-1">ST</TableHead>
+                    <TableHead className="px-2 py-1">Fornecimento</TableHead>
+                    <TableHead className="px-2 py-1">NF</TableHead>
+                    <TableHead className="px-2 py-1">Destino</TableHead>
+                    <TableHead className="px-2 py-1">Status</TableHead>
+                    <TableHead className="px-2 py-1">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {shippingData.shipmentShipping.map((invoice, index) => {
+                    let statusClass = "";
 
-                  if (invoice.shipment.status === "Pendente") {
-                    statusClass = "bg-yellow-300";
-                  } else if (invoice.shipment.status === "Expedido") {
-                    statusClass = "bg-green-200";
-                  } else if (invoice.shipment.status === "Em romaneio") {
-                    statusClass = "bg-blue-200";
-                  } else {
-                    statusClass = "bg-gray-200";
-                  }
+                    if (invoice.shipment.status === "Pendente") {
+                      statusClass = "bg-yellow-300";
+                    } else if (invoice.shipment.status === "Expedido") {
+                      statusClass = "bg-green-200";
+                    } else if (invoice.shipment.status === "Em romaneio") {
+                      statusClass = "bg-blue-200";
+                    } else {
+                      statusClass = "bg-gray-200";
+                    }
 
-                  return (
-                    <TableRow key={index} className="h-8">
-                      <TableCell className="px-2 py-1">
-                        {invoice.shipment.st}
-                      </TableCell>
-                      <TableCell className="px-2 py-1">
-                        {invoice.shipment.supply}
-                      </TableCell>
-                      <TableCell className="px-2 py-1">
-                        {invoice.shipment.invoice_number}
-                      </TableCell>
-                      <TableCell className="px-2 py-1">
-                        {invoice.shipment.destination}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className={`flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3 ${statusClass}`}
-                        >
-                          {invoice.shipment.status === "Expedido" ? (
-                            <CheckCircle2Icon className="text-green-500 dark:text-green-400" />
-                          ) : (
-                            <LoaderIcon />
-                          )}
-                          {invoice.shipment.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="px-2 py-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-1 cursor-pointer"
-                          onClick={() =>
-                            handleDelete(shippingData.id, invoice.shipment)
-                          }
-                        >
-                          <Trash2 className="h-4 w-4 text-red-600" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                    return (
+                      <TableRow key={index} className="h-8">
+                        <TableCell className="px-2 py-1">
+                          {invoice.shipment.st}
+                        </TableCell>
+                        <TableCell className="px-2 py-1">
+                          {invoice.shipment.supply}
+                        </TableCell>
+                        <TableCell className="px-2 py-1">
+                          {invoice.shipment.invoice_number}
+                        </TableCell>
+                        <TableCell className="px-2 py-1">
+                          {invoice.shipment.destination}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={`flex gap-1 px-1.5 text-muted-foreground [&_svg]:size-3 ${statusClass}`}
+                          >
+                            {invoice.shipment.status === "Expedido" ? (
+                              <CheckCircle2Icon className="text-green-500 dark:text-green-400" />
+                            ) : (
+                              <LoaderIcon />
+                            )}
+                            {invoice.shipment.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="px-2 py-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-1 cursor-pointer"
+                            onClick={() =>
+                              handleDelete(shippingData.id, invoice.shipment)
+                            }
+                          >
+                            <Trash2 className="h-4 w-4 text-red-600" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
 
             {openDelete && (
               <ModalDeleteInvoice

@@ -28,6 +28,7 @@ interface ShippingContextData {
   handleFindIdShipping: (id: number) => Promise<void>;
   handleUdpateShipping: (id: number, data: CreateShippingDto) => Promise<void>;
   handleDeleteShipping: (id: number) => void;
+  handleDeleteAllManifestShipping: (id: number) => void;
   handleDeleteManifestShipping: (
     id: number,
     data: DeletarManifestDto
@@ -165,6 +166,20 @@ export const ShippingProvider = ({ children }: Props) => {
     []
   );
 
+  const handleDeleteAllManifestShipping = useCallback(async (id: number) => {
+    try {
+      setLoadingFetch(true);
+
+      await api.delete(`/shipping/manifest/all/${id}`);
+      setContext(true);
+      toast.success("Todas as NFs deletadas");
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoadingFetch(false);
+    }
+  }, []);
+
   return (
     <ShippingContext.Provider
       value={{
@@ -177,6 +192,7 @@ export const ShippingProvider = ({ children }: Props) => {
         handleDeleteManifestShipping,
         loadShipping,
         handleFinishShipping,
+        handleDeleteAllManifestShipping,
       }}
     >
       {children}

@@ -20,11 +20,14 @@ import { ShipmentCreateTable } from "../../components/ShipmentCreateTable";
 import { useShipping } from "../../contexts/hooks/Shipping";
 import { useNavigate, useParams } from "react-router-dom";
 import { useLoading } from "../../contexts/hooks/Loanding";
+import { ModalDeleteAllInvoice } from "../../components/ModalDeleteAllInvoices";
 
 export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
   const { searchInvoiceShipping } = useShipment();
   const { shippingData, handleFindIdShipping } = useShipping();
   const { isLoadingFetch, isLoadingContext } = useLoading();
+
+  const [open, setOpen] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -73,61 +76,90 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
     }
   };
 
+  const handleDeleteAll = (id: number) => {
+    handleFindIdShipping(id);
+    setOpen(true);
+  };
+
   const handleManifest = () => {
     navigate("/romaneio");
   };
 
   return (
-    <SidebarProvider>
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <form {...props} onSubmit={handleSearch}>
-          <SidebarGroup className="py-1">
-            <span className="ml-2 block text-center font-bold mb-1">
-              Adicionar nota fiscal para Romaneio nº {id}
-            </span>
-            <SidebarGroupContent className="relative flex flex-col sm:flex-row max-w-lg items-center gap-2 sm:gap-4 sm:space-x-4 px-2 sm:px-0 sm:ml-2">
-              <Label htmlFor="searchData" className="sr-only">
-                Search
-              </Label>
-              <div className="relative w-full sm:w-auto">
-                <SidebarInput
-                  id="searchData"
-                  name="searchData"
-                  type="text"
-                  value={formData.searchData}
-                  onChange={handleChange}
-                  placeholder="Procurar... ST, Fornecimento e Nota Fiscal"
-                  className="pl-8 w-full sm:w-auto"
-                />
-                <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
-              </div>
-              <div className="flex flex-row items-center ">
-                <Button type="submit" className="cursor-pointer">
-                  Adicionar
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleManifest}
-                  className="cursor-pointer ml-1 bg-green-600 hover:bg-green-700"
-                >
-                  Finalizar
-                </Button>
-                {shippingData?.shipmentShipping &&
-                  shippingData.shipmentShipping?.length > 0 && (
-                    <span className="ml-2 block text-center mt-2">
-                      Total: {shippingData.shipmentShipping.length}
-                    </span>
-                  )}
-              </div>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </form>
-        <div className="px-4 lg:px-6">
-          <ShipmentCreateTable id={Number(id)} />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <>
+      <SidebarProvider>
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader />
+          <form {...props} onSubmit={handleSearch}>
+            <SidebarGroup className="py-1">
+              <span className="ml-2 block text-center font-bold mb-1">
+                Adicionar nota fiscal para Romaneio Nº {id}
+              </span>
+              <SidebarGroupContent className="relative flex flex-col sm:flex-row max-w-lg items-center gap-2 sm:gap-4 sm:space-x-4 px-2 sm:px-0 sm:ml-2">
+                <Label htmlFor="searchData" className="sr-only">
+                  Search
+                </Label>
+                <div className="relative w-full sm:w-auto">
+                  <SidebarInput
+                    id="searchData"
+                    name="searchData"
+                    type="text"
+                    value={formData.searchData}
+                    onChange={handleChange}
+                    placeholder="Procurar... ST, Fornecimento e Nota Fiscal"
+                    className="pl-8 w-full sm:w-auto"
+                  />
+                  <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <Button
+                    type="submit"
+                    className="h-8 px-3 text-sm cursor-pointer"
+                  >
+                    Adicionar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleManifest}
+                    className="h-8 px-3 text-sm bg-green-600 hover:bg-green-700 cursor-pointer"
+                  >
+                    Finalizar
+                  </Button>
+
+                  {shippingData?.shipmentShipping &&
+                    shippingData.shipmentShipping?.length > 0 && (
+                      <Button
+                        type="button"
+                        onClick={() => handleDeleteAll(Number(id))}
+                        className="h-8 px-3 text-sm bg-red-600 hover:bg-red-700 cursor-pointer"
+                      >
+                        Deletar Todos
+                      </Button>
+                    )}
+
+                  {shippingData?.shipmentShipping &&
+                    shippingData.shipmentShipping?.length > 0 && (
+                      <span className="ml-2 W-full block text-sm">
+                        Total: {shippingData.shipmentShipping.length}
+                      </span>
+                    )}
+                </div>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </form>
+          <div className="px-4 lg:px-6">
+            <ShipmentCreateTable id={Number(id)} />
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+      {open && (
+        <ModalDeleteAllInvoice
+          open={open}
+          setOpen={setOpen}
+          idDelete={Number(id)}
+        />
+      )}
+    </>
   );
 }
