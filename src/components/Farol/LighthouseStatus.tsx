@@ -39,6 +39,7 @@ const statusMap: Record<
     label: "Farol",
     tooltip: "As notas estão acima de 2 dias",
     duration: 1.5,
+    pulse: true,
   },
   error: {
     icon: XCircle,
@@ -77,7 +78,7 @@ export function LighthouseStatus({ status, onClick }: Props) {
           className="flex items-center cursor-pointer gap-2"
         >
           <Badge className={`${badgeClass} w-20`}>
-            <Icon className={`w-4 h-4 mr-1 ${iconClass}`} />
+            <Icon className={`w-4 h-4 ${iconClass}`} />
             {label}
           </Badge>
         </motion.div>

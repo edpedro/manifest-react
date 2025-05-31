@@ -33,7 +33,7 @@ export default function Painel() {
           <SiteHeader />
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
-              <div className="flex flex-row px-2 lg:px-6 mt-3 -mb-5">
+              <div className="flex flex-row px-2 ml-1 lg:px-6 mt-3 -mb-5">
                 {invoicePendingData && invoicePendingData.length > 0 ? (
                   <LighthouseStatus
                     status={lighthouse as Status}
