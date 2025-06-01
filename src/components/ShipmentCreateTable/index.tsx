@@ -14,6 +14,7 @@ import { useShipping } from "../../contexts/hooks/Shipping";
 import { ModalDeleteInvoice } from "../ModalDeleteInvoice";
 import { DeletarManifestDto, DeleteShipmentDto } from "../../types";
 import { Badge } from "../ui/badge";
+import { useLoading } from "../../contexts/hooks/Loanding";
 
 interface UIPropsModal {
   id: number;
@@ -21,7 +22,8 @@ interface UIPropsModal {
 
 export function ShipmentCreateTable({ id }: UIPropsModal) {
   const { setDataSearch } = useShipment();
-  const { shippingData } = useShipping();
+  const { shippingData, handleFindIdShipping } = useShipping();
+  const { isLoadingContext } = useLoading();
 
   const [openDelete, setOpenDelete] = useState(false);
   const [idDelete, setIdDelete] = useState<number>(0);
@@ -35,6 +37,15 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
   const [deleteinvoice, setDeleteinvoice] = useState<DeletarManifestDto>({
     shipmentId: [],
   });
+
+  useEffect(() => {
+    async function load() {
+      await handleFindIdShipping(id);
+    }
+    if (isLoadingContext) {
+      load();
+    }
+  }, [isLoadingContext, handleFindIdShipping, id]);
 
   useEffect(() => {
     return () => {
