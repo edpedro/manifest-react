@@ -195,6 +195,11 @@ export interface DeletarManifestDto {
   shipmentId: number[];
 }
 
+export interface CreateManifestInvoiceDto {
+  shippingId: number;
+  search: string;
+}
+
 export interface DeleteShipmentDto {
   id: number;
   st: string;

@@ -8,6 +8,7 @@ import {
 } from "react";
 import api from "../../services/api";
 import {
+  CreateManifestInvoiceDto,
   CreateShippingDto,
   DeletarManifestDto,
   FinishManifestDto,
@@ -26,6 +27,9 @@ interface ShippingContextData {
   filterShippingData?: UIShippingDto[];
   loadShipping: () => Promise<void>;
   handleCreateShipping: (data: CreateShippingDto) => Promise<void>;
+  handleCreateManifestInvoices: (
+    data: CreateManifestInvoiceDto
+  ) => Promise<void>;
   handleFindIdShipping: (id: number) => Promise<void>;
   handleUdpateShipping: (id: number, data: CreateShippingDto) => Promise<void>;
   handleDeleteShipping: (id: number) => void;
@@ -186,6 +190,22 @@ export const ShippingProvider = ({ children }: Props) => {
     }
   }, []);
 
+  const handleCreateManifestInvoices = useCallback(
+    async (data: CreateManifestInvoiceDto) => {
+      try {
+        setLoadingFetch(true);
+        await api.post("/shipping/manifest/invoice", data);
+        setContext(true);
+        toast.success("Nota fiscal incluída com sucesso!");
+      } catch (error) {
+        toast.error(error.response?.data?.message);
+      } finally {
+        setLoadingFetch(false);
+      }
+    },
+    []
+  );
+
   return (
     <ShippingContext.Provider
       value={{
@@ -200,6 +220,7 @@ export const ShippingProvider = ({ children }: Props) => {
         handleFinishShipping,
         handleDeleteAllManifestShipping,
         filterShippingData,
+        handleCreateManifestInvoices,
       }}
     >
       {children}

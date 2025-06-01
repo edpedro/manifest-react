@@ -11,9 +11,8 @@ import {
 } from "../../components/ui/sidebar";
 
 import { Button } from "../../components/ui/button";
-import { useShipment } from "../../contexts/hooks/Shipment";
 import { toast } from "react-toastify";
-import { SearchDto } from "../../types";
+import { CreateManifestInvoiceDto, SearchDto } from "../../types";
 import { AppSidebar } from "../../components/app-sidebar";
 import { SiteHeader } from "../../components/site-header";
 import { ShipmentCreateTable } from "../../components/ShipmentCreateTable";
@@ -23,8 +22,8 @@ import { useLoading } from "../../contexts/hooks/Loanding";
 import { ModalDeleteAllInvoice } from "../../components/ModalDeleteAllInvoices";
 
 export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
-  const { searchInvoiceShipping } = useShipment();
-  const { shippingData, handleFindIdShipping } = useShipping();
+  const { shippingData, handleFindIdShipping, handleCreateManifestInvoices } =
+    useShipping();
   const { isLoadingFetch, isLoadingContext } = useLoading();
 
   const [open, setOpen] = useState(false);
@@ -70,7 +69,11 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
     }
 
     try {
-      await searchInvoiceShipping(formData, Number(id));
+      const data: CreateManifestInvoiceDto = {
+        shippingId: Number(id),
+        search: formData.searchData,
+      };
+      await handleCreateManifestInvoices(data);
     } catch (error) {
       console.error(error);
     }
@@ -107,7 +110,7 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
                     type="text"
                     value={formData.searchData}
                     onChange={handleChange}
-                    placeholder="Procurar... ST, Fornecimento e Nota Fiscal"
+                    placeholder="Adicionar... ST, Fornecimento e Nota Fiscal"
                     className="pl-8 w-full sm:w-auto"
                   />
                   <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
