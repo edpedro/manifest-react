@@ -23,6 +23,7 @@ type Props = {
 interface ShippingContextData {
   shippingData?: UIShippingDto;
   shippingAllData?: UIShippingDto[];
+  filterShippingData?: UIShippingDto[];
   loadShipping: () => Promise<void>;
   handleCreateShipping: (data: CreateShippingDto) => Promise<void>;
   handleFindIdShipping: (id: number) => Promise<void>;
@@ -43,6 +44,8 @@ const ShippingContext = createContext<ShippingContextData>(
 export const ShippingProvider = ({ children }: Props) => {
   const [shippingData, setShippingData] = useState<UIShippingDto>();
   const [shippingAllData, setShippingAllData] = useState<UIShippingDto[]>();
+  const [filterShippingData, setFilterShippingData] =
+    useState<UIShippingDto[]>();
 
   const { setLoadingFetch, setContext, isLoadingContext } = useLoading();
 
@@ -55,11 +58,14 @@ export const ShippingProvider = ({ children }: Props) => {
   async function loadShipping(): Promise<void> {
     try {
       setLoadingFetch(true);
-      const result = await api.get("/shipping");
+      const response = await api.get("/shipping");
 
-      const sortData = result.data.sort((a, b) => b.id - a.id);
+      const { data, result } = response.data;
+
+      const sortData = data.sort((a, b) => b.id - a.id);
 
       setShippingAllData(sortData);
+      setFilterShippingData(result);
     } catch (error) {
       toast.error(error.response?.data?.message);
     } finally {
@@ -193,6 +199,7 @@ export const ShippingProvider = ({ children }: Props) => {
         loadShipping,
         handleFinishShipping,
         handleDeleteAllManifestShipping,
+        filterShippingData,
       }}
     >
       {children}

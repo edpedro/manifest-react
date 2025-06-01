@@ -34,7 +34,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
   const {
     handleCreateShipping,
     handleUdpateShipping,
-    shippingAllData,
+    filterShippingData,
     shippingData,
   } = useShipping();
 
@@ -87,7 +87,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     const sanitizedValue =
       type === "cpf" ? value.replace(/\D/g, "") : value.trim().toLowerCase();
 
-    const match = shippingAllData?.find((item: ShippingData) => {
+    const match = filterShippingData?.find((item: ShippingData) => {
       if (type === "cpf") {
         return item.cpf.replace(/\D/g, "") === sanitizedValue;
       } else {
@@ -241,7 +241,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
             <datalist id="name-list">
               {[
                 ...new Set(
-                  shippingAllData?.map((item) => item.name.toUpperCase())
+                  filterShippingData?.map((item) => item.name.toUpperCase())
                 ),
               ]
                 .sort()
@@ -265,7 +265,11 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
               className={errors.cpf ? "border-red-500" : ""}
             />
             <datalist id="cpf-list">
-              {[...new Set(shippingAllData?.map((item) => formatCpf(item.cpf)))]
+              {[
+                ...new Set(
+                  filterShippingData?.map((item) => formatCpf(item.cpf))
+                ),
+              ]
                 .sort()
                 .map((cpf, index) => (
                   <option key={index} value={cpf} />
