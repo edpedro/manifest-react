@@ -78,7 +78,7 @@ export function RegisterForm({
         formData.first_name,
         formData.last_name,
         formData.email,
-        formData.username,
+        formData.username.toLowerCase(),
         formData.password,
         formData.type
       );
@@ -154,6 +154,7 @@ export function RegisterForm({
                       type="text"
                       value={formData.username}
                       onChange={handleChange}
+                      className="lowercase"
                       required
                     />
                   </div>
