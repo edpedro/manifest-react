@@ -58,6 +58,10 @@ export function ModalDisplay({ openDisplay, setOpenDisplay }: UIPropsModal) {
     }
   }, [openDisplay, shipmentData]);
 
+  const formatCpf = (cpf: string) => {
+    return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
@@ -106,7 +110,7 @@ export function ModalDisplay({ openDisplay, setOpenDisplay }: UIPropsModal) {
             </Label>
             <Input
               id="cpf"
-              value={formData.cpf}
+              value={formatCpf(formData.cpf)}
               onChange={handleChange}
               className="col-span-3"
               disabled
