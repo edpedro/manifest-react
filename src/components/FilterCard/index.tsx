@@ -86,8 +86,6 @@ export function FilterCard() {
     };
 
     await loadFilterDashboard(filters);
-    console.log("Filtros aplicados:", filters);
-    // Aqui você pode adicionar a lógica para aplicar os filtros
   };
 
   return (
