@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 import {
@@ -14,30 +13,22 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../../ui/card";
+import { useDashboard } from "../../../contexts/hooks/Dashboard";
 
 export const description = "A bar chart";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Total",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
 
 export function BarCityCharts() {
+  const { dashboardData } = useDashboard();
   return (
     <Card>
       <CardHeader>
@@ -50,14 +41,14 @@ export function BarCityCharts() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={dashboardData?.top10InvoiceCityTotal}
             margin={{
               top: 20,
             }}
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="name"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -67,7 +58,7 @@ export function BarCityCharts() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8}>
+            <Bar dataKey="total" fill="var(--color-total)" radius={8}>
               <LabelList
                 position="top"
                 offset={12}

@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes as Router, Route } from "react-router-dom";
-import Painel from "../pages/Painel";
 import Search from "../pages/Search";
 import ImportExcel from "../pages/ImportExcel";
 import ExportExcel from "../pages/ExportExcel";
@@ -14,6 +13,7 @@ import Mail from "../pages/Mail";
 import User from "../pages/User";
 import { ResetPassword } from "../pages/ResetPassword";
 import { ResetMail } from "../pages/ResetMail";
+import Dashboard from "../pages/Dashboard";
 
 const Routes = () => {
   return (
@@ -23,7 +23,7 @@ const Routes = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/reset" element={<ResetMail />} />
       <Route element={<PrivateRoutes />}>
-        <Route path="/" element={<Painel />} />
+        <Route path="/" element={<Dashboard />} />
         <Route path="/search" element={<Search />} />
         <Route path="/import" element={<ImportExcel />} />
         <Route path="/export" element={<ExportExcel />} />

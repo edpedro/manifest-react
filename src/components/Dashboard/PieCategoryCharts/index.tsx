@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { LabelList, Pie, PieChart } from "recharts";
+import { LabelList, Pie, PieChart, Cell } from "recharts";
 
 import {
   Card,
@@ -17,44 +17,44 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../../ui/chart";
+import { useDashboard } from "../../../contexts/hooks/Dashboard";
 
 export const description = "A pie chart with a label list";
-
-const chartData = [
-  { browser: "casa_cliente", total: 275, fill: "var(--color-casa_cliente)" },
-  { browser: "marketing", total: 200, fill: "var(--color-marketing)" },
-  { browser: "ferrmental", total: 187, fill: "var(--color-ferrmental)" },
-  { browser: "rede_externa", total: 173, fill: "var(--color-rede_externa)" },
-  { browser: "engenharia", total: 90, fill: "var(--color-engenharia)" },
-];
 
 const chartConfig = {
   total: {
     label: "Total",
   },
-  casa_cliente: {
-    label: "Casa Cliente",
-    color: "var(--chart-1)",
+  CASA_CLIENTE: {
+    label: "CASA_CLIENTE",
+    color: "var(--color-casa-cliente)",
   },
-  marketing: {
-    label: "Marketing",
-    color: "var(--chart-2)",
+  MARKETING: {
+    label: "MARKETING",
+    color: "var(--color-marketing)",
   },
-  ferrmental: {
-    label: "Ferramental",
-    color: "var(--chart-3)",
+  FERRAMENTAL: {
+    label: "FERRAMENTAL",
+    color: "var(--color-ferramental)",
   },
-  rede_externa: {
-    label: "Rede Externa",
-    color: "var(--chart-4)",
+  REDE_EXTERNA: {
+    label: "REDE_EXTERNA",
+    color: "var(--color-rede-externa)",
   },
-  engenharia: {
-    label: "Engenharia",
-    color: "var(--chart-5)",
+  ENGENHARIA: {
+    label: "ENGENHARIA",
+    color: "var(--color-engenharia)",
   },
 } satisfies ChartConfig;
 
 export function PieCategoryCharts() {
+  const { dashboardData } = useDashboard();
+
+  // Função para obter a cor baseada no nome da categoria
+  const getColorForCategory = (categoryName) => {
+    return chartConfig[categoryName]?.color || "var(--color-casa-cliente)";
+  };
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -65,17 +65,30 @@ export function PieCategoryCharts() {
         <ChartContainer
           config={chartConfig}
           className="[&_.recharts-text]:fill-background mx-auto aspect-square max-h-[205px]"
+          style={{
+            "--color-casa-cliente": "#8884d8",
+            "--color-marketing": "#82ca9d",
+            "--color-ferramental": "#ffc658",
+            "--color-rede-externa": "#ff7300",
+            "--color-engenharia": "#00ff88",
+          }}
         >
           <PieChart>
             <ChartTooltip
               content={<ChartTooltipContent nameKey="total" hideLabel />}
             />
-            <Pie data={chartData} dataKey="total">
+            <Pie data={dashboardData?.categoryTotal} dataKey="total">
+              {dashboardData?.categoryTotal?.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={getColorForCategory(entry.name)}
+                />
+              ))}
               <LabelList
-                dataKey="browser"
+                dataKey="name"
                 className="fill-background"
                 stroke="none"
-                fontSize={12}
+                fontSize={10}
                 formatter={(value: keyof typeof chartConfig) =>
                   chartConfig[value]?.label
                 }

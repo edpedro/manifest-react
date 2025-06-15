@@ -6,62 +6,86 @@ import {
   Timer,
   Banknote,
 } from "lucide-react";
-import React, { useEffect } from "react";
-import { useShipment } from "../../contexts/hooks/Shipment";
 import { useLoading } from "../../contexts/hooks/Loanding";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { useDashboard } from "../../contexts/hooks/Dashboard";
+
+const formatLargeNumber = (value, isCurrency = false) => {
+  if (!value) return "-";
+
+  const num = parseFloat(value);
+
+  if (num >= 1000000000) {
+    const formatted = (num / 1000000000).toFixed(1);
+    return isCurrency ? `R$ ${formatted} Bi` : `${formatted}B`;
+  } else if (num >= 1000000) {
+    const formatted = (num / 1000000).toFixed(1);
+    return isCurrency ? `R$ ${formatted} Mi` : `${formatted}M`;
+  } else if (num >= 1000) {
+    const formatted = (num / 1000).toFixed(1);
+    return isCurrency ? `R$ ${formatted} K` : `${formatted}K`;
+  }
+
+  if (isCurrency) {
+    return num.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  return num.toString();
+};
 
 export function SectionCardDash() {
-  const { dashData, loadDashboard } = useShipment();
+  const { dashboardData } = useDashboard();
   const { isDashboard } = useLoading();
-
-  useEffect(() => {
-    loadDashboard();
-  }, []);
 
   const cardData = [
     {
       title: "Total Notas Fiscais",
-      value: dashData?.TotalSupply,
+      value: dashboardData?.TotalSupply,
       icon: FileText,
       color: "from-gray-800 to-gray-800",
       bgColor: "bg-gray-50",
       iconColor: "text-gray-800",
+      isLargeNumber: true,
     },
     {
       title: "Total STs",
-      value: dashData?.TotalSt,
+      value: dashboardData?.TotalSt,
       icon: Package,
       color: "from-gray-800 to-gray-800",
       bgColor: "bg-gray-50",
       iconColor: "text-gray-800",
+      isLargeNumber: true,
     },
     {
       title: "Total Expedição",
-      value: dashData?.TotalExpedition,
+      value: dashboardData?.TotalExpedition,
       icon: Truck,
       color: "from-gray-800 to-gray-800",
       bgColor: "bg-gray-50",
       iconColor: "text-gray-800",
+      isLargeNumber: true,
     },
     {
       title: "Tempo Medio Exp",
-      value: "2,2",
+      value: dashboardData?.media?.toFixed(1),
       icon: Timer,
       color: "from-gray-800 to-gray-800",
       bgColor: "bg-gray-50",
       iconColor: "text-gray-800",
+      isLargeNumber: false,
     },
     {
       title: "Soma Valor",
-      value: dashData?.SomaValeu?.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }),
+      value: dashboardData?.SomaValeu,
       icon: Banknote,
       color: "from-gray-800 to-gray-800",
       bgColor: "bg-gray-50",
       iconColor: "text-gray-800",
+      isCurrency: true,
+      isLargeNumber: true,
     },
   ];
 
@@ -70,6 +94,19 @@ export function SectionCardDash() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 overflow-x-auto md:overflow-visible">
         {cardData.map((card, index) => {
           const IconComponent = card.icon;
+
+          let displayValue;
+          if (card.isLargeNumber) {
+            displayValue = formatLargeNumber(card.value, card.isCurrency);
+          } else if (card.isCurrency && card.value) {
+            displayValue = card.value.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            });
+          } else {
+            displayValue = card.value || "-";
+          }
+
           return (
             <Card
               key={index}
@@ -89,15 +126,15 @@ export function SectionCardDash() {
                 </div>
 
                 <div className="pt-2">
-                  <CardDescription className="font-medium text-xs  text-gray-600 flex justify-center items-center gap-1.5">
+                  <CardDescription className="font-medium text-xs text-gray-600 flex justify-center items-center gap-1.5">
                     {card.title}
                     {isDashboard && (
                       <Loader2 className="h-3 w-3 animate-spin text-gray-400" />
                     )}
                   </CardDescription>
 
-                  <CardTitle className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 mt-1">
-                    {card.value || "-"}
+                  <CardTitle className="text-lg md:text-xl lg:text-2xl text-gray-800 mt-1">
+                    {displayValue}
                   </CardTitle>
                 </div>
               </CardHeader>

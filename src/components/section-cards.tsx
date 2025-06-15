@@ -1,15 +1,15 @@
 import { Loader2 } from "lucide-react";
-import { useShipment } from "../contexts/hooks/Shipment";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import React, { useEffect } from "react";
 import { useLoading } from "../contexts/hooks/Loanding";
+import { useDashboard } from "../contexts/hooks/Dashboard";
 
 export function SectionCards() {
-  const { dashData, loadDashboard } = useShipment();
   const { isDashboard } = useLoading();
+  const { loadFilterDashboard, dashboardData } = useDashboard();
 
   useEffect(() => {
-    loadDashboard();
+    loadFilterDashboard();
   }, []);
 
   return (
@@ -24,7 +24,7 @@ export function SectionCards() {
           </CardDescription>
 
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {dashData?.TotalSupply}
+            {dashboardData?.TotalSupply}
           </CardTitle>
         </CardHeader>
       </Card>
@@ -37,7 +37,7 @@ export function SectionCards() {
             )}
           </CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {dashData?.TotalSt}
+            {dashboardData?.TotalSt}
           </CardTitle>
         </CardHeader>
       </Card>
@@ -50,7 +50,7 @@ export function SectionCards() {
             )}
           </CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {dashData?.TotalExpedition}
+            {dashboardData?.TotalExpedition}
           </CardTitle>
         </CardHeader>
       </Card>
@@ -63,8 +63,8 @@ export function SectionCards() {
             )}
           </CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {dashData?.SomaValeu &&
-              dashData?.SomaValeu.toLocaleString("pt-BR", {
+            {dashboardData?.SomaValeu &&
+              dashboardData?.SomaValeu.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               })}

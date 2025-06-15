@@ -223,3 +223,65 @@ export interface UiMailDto {
 }
 
 export type Status = "gray" | "success" | "warning" | "error";
+
+export interface DashboardDataDto {
+  TotalSupply: number;
+  TotalSt: number;
+  SomaValeu: number;
+  TotalExpedition: number;
+  groupedInvoices: GroupedInvoiceData[];
+  categoryTotal: Category[];
+  top10InvoiceUfTotal: UF[];
+  top10InvoiceCityTotal: City[];
+  top10InvoiceTransportTotal: Transport[];
+  invoiceTotal3: number;
+  top5InvoiceTransportValueTotal: TransportValue[];
+  timeShippinng: { hora: string; total: number }[];
+  media: number;
+  modalTotal: Modal[];
+  driver: number;
+}
+
+export interface GroupedInvoiceData {
+  invoice_issue_date: string;
+  invoice: number;
+  dispatched: number;
+}
+
+export interface Category {
+  name: string;
+  total: number;
+}
+export interface UF {
+  name: string;
+  total: number;
+}
+export interface City {
+  name: string;
+  total: number;
+}
+export interface Transport {
+  name: string;
+  total: number;
+}
+export interface TransportValue {
+  name: string;
+  valeu: number;
+}
+
+export interface Modal {
+  name: string;
+  total: number;
+}
+
+export interface FilterSearch {
+  category?: string;
+  month?: string;
+  status?: string;
+  transport_mode?: string;
+  transport_mode_carrier?: string;
+  city?: string;
+  transportEnd?: string;
+  dateStart?: string;
+  dateEnd?: string;
+}

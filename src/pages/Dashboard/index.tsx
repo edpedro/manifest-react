@@ -16,15 +16,19 @@ import { BarTransporteCharts } from "../../components/Dashboard/BarTransporteCha
 import { LineHighLowCharts } from "../../components/Dashboard/LineHighLowCharts";
 import { SectionDriverPendingInvoices } from "../../components/Dashboard/SectionDriverPendingInvoices";
 import { BillingTranspCharts } from "../../components/Dashboard/BillingTranspCharts";
+import { useDashboard } from "../../contexts/hooks/Dashboard";
+import { PieModalCharts } from "../../components/Dashboard/PieModalCharts";
 
 export default function Dashboard() {
   const { loadInvoicePendingShipping, lighthouse, invoicePendingData } =
     useShipment();
+  const { loadFilterDashboard } = useDashboard();
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     loadInvoicePendingShipping();
+    loadFilterDashboard();
   }, []);
 
   const handleDisplay = () => {
@@ -56,7 +60,7 @@ export default function Dashboard() {
               {/* Filter Card - Posicionamento fixo */}
               <div className="relative h-0">
                 <div className="fixed right-6 top-19 -translate-y-1/2 z-50">
-                  <FilterCard />
+                  {/* <FilterCard /> */}
                 </div>
               </div>
 
@@ -96,14 +100,21 @@ export default function Dashboard() {
               <div className="px-2 lg:px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
                   <div className="w-full">
+                    <SectionDriverPendingInvoices />
+                  </div>
+                </div>
+              </div>
+              <div className="px-2 lg:px-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
+                  <div className="w-full h-full">
                     <LineHighLowCharts />
                   </div>
 
-                  <div className="w-full">
-                    <SectionDriverPendingInvoices />
+                  <div className="w-full h-full">
+                    <PieModalCharts />
                   </div>
 
-                  <div className="w-full">
+                  <div className="w-full h-full">
                     <BillingTranspCharts />
                   </div>
                 </div>

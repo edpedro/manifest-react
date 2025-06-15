@@ -1,13 +1,11 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, LabelList, Line, LineChart } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../../ui/card";
@@ -17,45 +15,20 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../../ui/chart";
+import { useDashboard } from "../../../contexts/hooks/Dashboard";
 
 export const description = "A line chart with a custom label";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
-
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-    color: "var(--chart-2)",
-  },
-  chrome: {
-    label: "16:00",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "14:00",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "12:00",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "10:00",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "08:00",
-    color: "var(--chart-5)",
+  total: {
+    label: "Total",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
 export function LineHighLowCharts() {
+  const { dashboardData } = useDashboard();
+
   return (
     <Card>
       <CardHeader>
@@ -66,11 +39,12 @@ export function LineHighLowCharts() {
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={dashboardData?.timeShippinng}
             margin={{
-              top: 24,
-              left: 24,
-              right: 24,
+              top: 30,
+              left: 30,
+              right: 30,
+              bottom: 30,
             }}
           >
             <CartesianGrid vertical={false} />
@@ -79,18 +53,18 @@ export function LineHighLowCharts() {
               content={
                 <ChartTooltipContent
                   indicator="line"
-                  nameKey="visitors"
+                  nameKey="total"
                   hideLabel
                 />
               }
             />
             <Line
-              dataKey="visitors"
+              dataKey="total"
               type="natural"
-              stroke="var(--color-visitors)"
+              stroke="var(--color-total)"
               strokeWidth={2}
               dot={{
-                fill: "var(--color-visitors)",
+                fill: "var(--color-total)",
               }}
               activeDot={{
                 r: 6,
@@ -101,10 +75,7 @@ export function LineHighLowCharts() {
                 offset={12}
                 className="fill-foreground"
                 fontSize={12}
-                dataKey="browser"
-                formatter={(value: keyof typeof chartConfig) =>
-                  chartConfig[value]?.label
-                }
+                dataKey="hora"
               />
             </Line>
           </LineChart>
