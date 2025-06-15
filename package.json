@@ -29,7 +29,7 @@
     "cpf-cnpj-validator": "^1.0.3",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
-    "lucide-react": "^0.503.0",
+    "lucide-react": "^0.513.0",
     "motion": "^12.15.0",
     "react": "^19.0.0",
     "react-datepicker": "^8.3.0",
