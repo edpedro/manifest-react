@@ -44,7 +44,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function AreInvoiceCharts() {
-  const [timeRange, setTimeRange] = React.useState("90d");
+  const [timeRange, setTimeRange] = React.useState("30d");
 
   const { dashboardData } = useDashboard();
 
@@ -68,7 +68,7 @@ export function AreInvoiceCharts() {
         <div className="grid flex-1 gap-1">
           <CardTitle>Análise Temporal de Notas x Expedido</CardTitle>
           <CardDescription>
-            Mostrando o total de notas dos últimos 3 meses
+            Mostrando o total de notas dos últimos 30 dias
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -79,9 +79,6 @@ export function AreInvoiceCharts() {
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Últimos 3 meses
-            </SelectItem>
             <SelectItem value="30d" className="rounded-lg">
               Últimos 30 dias
             </SelectItem>

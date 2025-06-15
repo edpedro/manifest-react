@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { CheckCircle2Icon, LoaderIcon, Trash2 } from "lucide-react";
 import { useShipment } from "../../contexts/hooks/Shipment";
@@ -72,10 +73,12 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
               <Table className="text-sm min-w-[600px]">
                 <TableHeader>
                   <TableRow className="h-8">
+                    <TableHead className="px-2 py-1"></TableHead>
                     <TableHead className="px-2 py-1">ST</TableHead>
                     <TableHead className="px-2 py-1">Fornecimento</TableHead>
                     <TableHead className="px-2 py-1">NF</TableHead>
                     <TableHead className="px-2 py-1">Destino</TableHead>
+                    <TableHead className="px-2 py-1">Categoria</TableHead>
                     <TableHead className="px-2 py-1">Status</TableHead>
                     <TableHead className="px-2 py-1">Ações</TableHead>
                   </TableRow>
@@ -97,6 +100,11 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
                     return (
                       <TableRow key={index} className="h-8">
                         <TableCell className="px-2 py-1">
+                          <div className="flex items-center gap-3">
+                            <Checkbox id="terms" />
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-2 py-1">
                           {invoice.shipment.st}
                         </TableCell>
                         <TableCell className="px-2 py-1">
@@ -106,8 +114,12 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
                           {invoice.shipment.invoice_number}
                         </TableCell>
                         <TableCell className="px-2 py-1">
-                          {invoice.shipment.destination}
+                          {invoice.shipment.city}
                         </TableCell>
+                        <TableCell className="px-2 py-1">
+                          {invoice.shipment.category}
+                        </TableCell>
+
                         <TableCell>
                           <Badge
                             variant="outline"
