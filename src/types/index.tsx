@@ -284,4 +284,16 @@ export interface FilterSearch {
   transportEnd?: string;
   dateStart?: string;
   dateEnd?: string;
+  uf?: string;
+}
+
+export interface FilteredValuesUi {
+  month: string[];
+  city: string[];
+  uf: string[];
+  carrier: string[];
+  transport_mode: string[];
+  category: string[];
+  transport: string[];
+  status: string[];
 }

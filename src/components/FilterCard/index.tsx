@@ -1,3 +1,5 @@
+import { useDashboard } from "../../contexts/hooks/Dashboard";
+import { FilterSearch } from "../../types";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -23,8 +25,70 @@ import { Filter } from "lucide-react";
 import { useState } from "react";
 
 export function FilterCard() {
+  const { filterDataDash, loadFilterDashboard } = useDashboard();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedModal, setSelectedModal] = useState("");
+  const [selectedTransportadora, setSelectedTransportadora] = useState("");
+  const [selectedTransporte, setSelectedTransporte] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedUF, setSelectedUF] = useState("");
+  const [dateError, setDateError] = useState("");
+
+  const validateDates = () => {
+    if ((startDate && !endDate) || (!startDate && endDate)) {
+      setDateError("Ambas as datas (inicial e final) devem ser preenchidas.");
+      return false;
+    }
+    if (startDate && endDate && startDate > endDate) {
+      setDateError("A data inicial não pode ser maior que a data final.");
+      return false;
+    }
+    setDateError("");
+    return true;
+  };
+
+  const handleClearFilters = async () => {
+    setStartDate("");
+    setEndDate("");
+    setSelectedMonth("");
+    setSelectedCategory("");
+    setSelectedModal("");
+    setSelectedTransportadora("");
+    setSelectedTransporte("");
+    setSelectedStatus("");
+    setSelectedCity("");
+    setSelectedUF("");
+    setDateError("");
+
+    await loadFilterDashboard();
+  };
+
+  const handleApplyFilters = async () => {
+    if (!validateDates()) {
+      return;
+    }
+
+    const filters: FilterSearch = {
+      dateStart: startDate,
+      dateEnd: endDate,
+      month: selectedMonth,
+      category: selectedCategory,
+      transport_mode: selectedModal,
+      transport_mode_carrier: selectedTransportadora,
+      transportEnd: selectedTransporte,
+      status: selectedStatus,
+      city: selectedCity,
+      uf: selectedUF,
+    };
+
+    await loadFilterDashboard(filters);
+    console.log("Filtros aplicados:", filters);
+    // Aqui você pode adicionar a lógica para aplicar os filtros
+  };
 
   return (
     <Sheet>
@@ -74,25 +138,17 @@ export function FilterCard() {
             >
               Período - Mês
             </Label>
-            <Select>
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
               <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
                 <SelectValue placeholder="Selecione o mês" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Mês</SelectLabel>
-                  <SelectItem value="janeiro">Janeiro</SelectItem>
-                  <SelectItem value="fevereiro">Fevereiro</SelectItem>
-                  <SelectItem value="marco">Março</SelectItem>
-                  <SelectItem value="abril">Abril</SelectItem>
-                  <SelectItem value="maio">Maio</SelectItem>
-                  <SelectItem value="junho">Junho</SelectItem>
-                  <SelectItem value="julho">Julho</SelectItem>
-                  <SelectItem value="agosto">Agosto</SelectItem>
-                  <SelectItem value="setembro">Setembro</SelectItem>
-                  <SelectItem value="outubro">Outubro</SelectItem>
-                  <SelectItem value="novembro">Novembro</SelectItem>
-                  <SelectItem value="dezembro">Dezembro</SelectItem>
+                  {filterDataDash?.month &&
+                    filterDataDash.month.map((months) => (
+                      <SelectItem value={months}>{months}</SelectItem>
+                    ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -110,7 +166,10 @@ export function FilterCard() {
                 id="start-date"
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  setDateError("");
+                }}
                 className="h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors"
                 required
               />
@@ -126,27 +185,37 @@ export function FilterCard() {
                 id="end-date"
                 type="date"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  setDateError("");
+                }}
                 className="h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors"
                 required
               />
             </div>
           </div>
+          {dateError && (
+            <div className="text-red-500 text-xs mt-1 px-2">{dateError}</div>
+          )}
 
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">
               Categoria
             </Label>
-            <Select>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
                 <SelectValue placeholder="Todas as categorias" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Categoria</SelectLabel>
-                  <SelectItem value="categoria1">Categoria 1</SelectItem>
-                  <SelectItem value="categoria2">Categoria 2</SelectItem>
-                  <SelectItem value="categoria3">Categoria 3</SelectItem>
+                  {filterDataDash?.category &&
+                    filterDataDash.category.map((categorys) => (
+                      <SelectItem value={categorys}>{categorys}</SelectItem>
+                    ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -154,16 +223,19 @@ export function FilterCard() {
 
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Modal</Label>
-            <Select>
+            <Select value={selectedModal} onValueChange={setSelectedModal}>
               <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
                 <SelectValue placeholder="Todos os modais" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Modal</SelectLabel>
-                  <SelectItem value="modal1">Modal 1</SelectItem>
-                  <SelectItem value="modal2">Modal 2</SelectItem>
-                  <SelectItem value="modal3">Modal 3</SelectItem>
+                  {filterDataDash?.transport_mode &&
+                    filterDataDash.transport_mode.map((transport_modes) => (
+                      <SelectItem value={transport_modes}>
+                        {transport_modes}
+                      </SelectItem>
+                    ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -173,16 +245,20 @@ export function FilterCard() {
             <Label className="text-sm font-semibold text-gray-700">
               Transportadora
             </Label>
-            <Select>
+            <Select
+              value={selectedTransportadora}
+              onValueChange={setSelectedTransportadora}
+            >
               <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
                 <SelectValue placeholder="Todas as transportadoras" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Transportadora</SelectLabel>
-                  <SelectItem value="transp1">Transportadora 1</SelectItem>
-                  <SelectItem value="transp2">Transportadora 2</SelectItem>
-                  <SelectItem value="transp3">Transportadora 3</SelectItem>
+                  {filterDataDash?.carrier &&
+                    filterDataDash.carrier.map((carriers) => (
+                      <SelectItem value={carriers}>{carriers}</SelectItem>
+                    ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -192,16 +268,20 @@ export function FilterCard() {
             <Label className="text-sm font-semibold text-gray-700">
               Transporte
             </Label>
-            <Select>
+            <Select
+              value={selectedTransporte}
+              onValueChange={setSelectedTransporte}
+            >
               <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
                 <SelectValue placeholder="Todos os tipos" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Transporte</SelectLabel>
-                  <SelectItem value="transporte1">Transporte 1</SelectItem>
-                  <SelectItem value="transporte2">Transporte 2</SelectItem>
-                  <SelectItem value="transporte3">Transporte 3</SelectItem>
+                  {filterDataDash?.transport &&
+                    filterDataDash.transport.map((transports) => (
+                      <SelectItem value={transports}>{transports}</SelectItem>
+                    ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -211,16 +291,55 @@ export function FilterCard() {
             <Label className="text-sm font-semibold text-gray-700">
               Status
             </Label>
-            <Select>
+            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
               <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
                 <SelectValue placeholder="Todos os status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Status</SelectLabel>
-                  <SelectItem value="ativo">Ativo</SelectItem>
-                  <SelectItem value="inativo">Inativo</SelectItem>
-                  <SelectItem value="pendente">Pendente</SelectItem>
+                  {filterDataDash?.status &&
+                    filterDataDash.status.map((statuss) => (
+                      <SelectItem value={statuss}>{statuss}</SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-semibold text-gray-700">
+              Cidade
+            </Label>
+            <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
+                <SelectValue placeholder="Todas as cidades" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Cidade</SelectLabel>
+                  {filterDataDash?.city &&
+                    filterDataDash.city.map((citys) => (
+                      <SelectItem value={citys}>{citys}</SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-semibold text-gray-700">UF</Label>
+            <Select value={selectedUF} onValueChange={setSelectedUF}>
+              <SelectTrigger className="w-full h-10 text-sm border-2 border-gray-200 hover:border-neutral-950 transition-colors">
+                <SelectValue placeholder="Todos os estados" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Estado</SelectLabel>
+                  {filterDataDash?.uf &&
+                    filterDataDash.uf.map((ufs) => (
+                      <SelectItem value={ufs}>{ufs}</SelectItem>
+                    ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -230,12 +349,14 @@ export function FilterCard() {
         <SheetFooter className="mt-6 flex gap-3 justify-end pt-4 border-t">
           <Button
             variant="outline"
+            onClick={handleClearFilters}
             className="h-10 px-6 text-sm font-medium border-2 hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Limpar Filtros
           </Button>
           <Button
             type="submit"
+            onClick={handleApplyFilters}
             className="h-10 px-6 text-sm font-medium bg-neutral-950 hover:bg-neutral-800 transition-colors cursor-pointer"
           >
             Aplicar Filtros

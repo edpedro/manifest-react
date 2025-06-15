@@ -9,7 +9,7 @@ import {
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useLoading } from "./Loanding";
-import { DashboardDataDto, FilterSearch } from "../../types";
+import { DashboardDataDto, FilteredValuesUi, FilterSearch } from "../../types";
 
 type Props = {
   children?: ReactNode;
@@ -17,7 +17,9 @@ type Props = {
 
 interface DashboardContextData {
   dashboardData?: DashboardDataDto;
+  filterDataDash?: FilteredValuesUi;
   loadFilterDashboard: (data?: FilterSearch) => Promise<void>;
+  loadFilterData: () => Promise<void>;
 }
 
 const DashboardContext = createContext<DashboardContextData>(
@@ -26,6 +28,7 @@ const DashboardContext = createContext<DashboardContextData>(
 
 export const DashboardProvider = ({ children }: Props) => {
   const [dashboardData, setDashboardData] = useState<DashboardDataDto>();
+  const [filterDataDash, setFilterDataDash] = useState<FilteredValuesUi>();
 
   const { setDashboard, isLoadingContext } = useLoading();
 
@@ -35,11 +38,16 @@ export const DashboardProvider = ({ children }: Props) => {
     }
   }, [isLoadingContext]);
 
+  async function loadFilterData(): Promise<void> {
+    const result = await api.get("/dashboard");
+
+    setFilterDataDash(result.data);
+  }
   const loadFilterDashboard = useCallback(async (data?: FilterSearch) => {
     try {
       setDashboard(true);
       const result = await api.post("/dashboard", data ?? {});
-      console.log(result.data);
+
       setDashboardData(result.data);
     } catch (error) {
       console.log(error);
@@ -54,6 +62,8 @@ export const DashboardProvider = ({ children }: Props) => {
       value={{
         loadFilterDashboard,
         dashboardData,
+        loadFilterData,
+        filterDataDash,
       }}
     >
       {children}

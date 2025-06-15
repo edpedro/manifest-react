@@ -22,13 +22,14 @@ import { PieModalCharts } from "../../components/Dashboard/PieModalCharts";
 export default function Dashboard() {
   const { loadInvoicePendingShipping, lighthouse, invoicePendingData } =
     useShipment();
-  const { loadFilterDashboard } = useDashboard();
+  const { loadFilterDashboard, loadFilterData } = useDashboard();
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     loadInvoicePendingShipping();
     loadFilterDashboard();
+    loadFilterData();
   }, []);
 
   const handleDisplay = () => {
@@ -60,7 +61,7 @@ export default function Dashboard() {
               {/* Filter Card - Posicionamento fixo */}
               <div className="relative h-0">
                 <div className="fixed right-6 top-19 -translate-y-1/2 z-50">
-                  {/* <FilterCard /> */}
+                  <FilterCard />
                 </div>
               </div>
 

@@ -47,7 +47,6 @@ export function ModalDisplay({ openDisplay, setOpenDisplay }: UIPropsModal) {
     }
 
     if (openDisplay && shipmentData) {
-      console.log(shipmentData);
       setFormData({
         name: shipmentData.name || "",
         transport: shipmentData.transport || "",
