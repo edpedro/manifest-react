@@ -75,8 +75,8 @@ export function RegisterForm({
 
     try {
       await register(
-        formData.first_name,
-        formData.last_name,
+        formData.first_name.trim(),
+        formData.last_name.trim(),
         formData.email,
         formData.username.toLowerCase(),
         formData.password,
