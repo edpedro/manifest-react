@@ -203,11 +203,11 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     };
 
     const data: CreateShippingDto = {
-      name: formData.name.toUpperCase(),
+      name: formData.name.toUpperCase().trim(),
       cpf: formData.cpf.replace(/\D/g, ""),
-      placa: formData.placa.toUpperCase(),
+      placa: formData.placa.toUpperCase().trim(),
       dispatch_date: formatEnvioDate(formData.dispatch_date),
-      transport: formData.transport.toUpperCase(),
+      transport: formData.transport.toUpperCase().trim(),
       estimatedArrival: formatEnvioHora(formData.dispatch_date),
     };
 

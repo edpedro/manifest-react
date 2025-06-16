@@ -32,7 +32,7 @@ export function BarTransporteCharts() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Peididos - Transportadoras</CardTitle>
+        <CardTitle>Pedidos - Transportadoras</CardTitle>
         <CardDescription>
           Pedidos concluídos por parceiro logístico
         </CardDescription>
