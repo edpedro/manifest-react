@@ -87,7 +87,7 @@ export function ShippingInvoice({ ...props }: React.ComponentProps<"form">) {
   const handleManifest = () => {
     navigate("/romaneio");
   };
-  console.log(shippingData);
+
   return (
     <>
       <SidebarProvider>

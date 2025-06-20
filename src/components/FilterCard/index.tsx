@@ -26,6 +26,7 @@ import { useState } from "react";
 
 export function FilterCard() {
   const { filterDataDash, loadFilterDashboard } = useDashboard();
+  const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -86,14 +87,17 @@ export function FilterCard() {
     };
 
     await loadFilterDashboard(filters);
+
+    setOpen(false);
   };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="default"
           size="sm"
+          onClick={() => setOpen(true)}
           className="
             bg-neutral-950 
             hover:bg-neutral-800 
