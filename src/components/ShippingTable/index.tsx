@@ -132,7 +132,7 @@ export function ShippingTable() {
                     <TableCell>
                       <div className="flex items-center space-x-1">
                         {authData?.type !== "driver" ? (
-                          invoice.isConfirm === false ? (
+                          invoice.status === "Pendente" ? (
                             <Button
                               variant="ghost"
                               size="sm"
@@ -147,6 +147,11 @@ export function ShippingTable() {
                               variant="ghost"
                               size="sm"
                               className="flex items-center gap-1 px-2 py-1"
+                              onClick={
+                                authData?.type === "admin"
+                                  ? () => handleFinish(invoice.id)
+                                  : undefined
+                              }
                             >
                               <Truck className="h-4 w-4 text-green-600" />
                               <span className="text-xs">Finalizado</span>

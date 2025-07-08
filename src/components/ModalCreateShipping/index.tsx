@@ -14,6 +14,14 @@ import { useShipping } from "../../contexts/hooks/Shipping";
 import { CreateShippingDto } from "../../types";
 import { cpf as cpfValidator } from "cpf-cnpj-validator";
 import * as dateFnsTz from "date-fns-tz";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useAuth } from "../../contexts/hooks/Auth";
 
 interface ShippingData {
   name: string;
@@ -37,6 +45,7 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     filterShippingData,
     shippingData,
   } = useShipping();
+  const { authData } = useAuth();
 
   const [formData, setFormData] = useState<ShippingData>({
     name: "",
@@ -44,6 +53,9 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     placa: "",
     dispatch_date: "",
     transport: "",
+  });
+  const [statusShipping, setStatusShipping] = useState({
+    status: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -177,6 +189,13 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
     return isValid;
   };
 
+  const handleSelectChange = (id: string, value: string) => {
+    setStatusShipping((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
   const handleSubmit = () => {
     if (!validateForm()) return;
 
@@ -209,6 +228,9 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
       dispatch_date: formatEnvioDate(formData.dispatch_date),
       transport: formData.transport.toUpperCase().trim(),
       estimatedArrival: formatEnvioHora(formData.dispatch_date),
+      ...(statusShipping.status && {
+        status: statusShipping.status,
+      }),
     };
 
     if (idUpdate && shippingData?.id) {
@@ -219,12 +241,14 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
 
     setOpen(false);
   };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cadastrar Romaneio</DialogTitle>
+          <DialogTitle>
+            {" "}
+            {idUpdate ? "Atualizar Romaneio" : "Cadastrar Romaneio"}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -319,6 +343,24 @@ export function ModalCreateShipping({ open, setOpen, idUpdate }: UIPropsModal) {
             )}
           </div>
         </div>
+        {authData?.type === "admin" && (
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="category" className="text-right">
+              Status
+            </Label>
+            <Select
+              onValueChange={(value) => handleSelectChange("status", value)}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Selecione a categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Pendente">Pendente</SelectItem>
+                <SelectItem value="Expedido">Expedido</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         <DialogFooter className="mt-4">
           <Button onClick={handleSubmit} className="cursor-pointer">
