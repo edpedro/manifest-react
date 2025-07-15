@@ -6,6 +6,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -83,14 +84,17 @@ export function ModalFinishShipping({
 
     setOpenFinish(false);
   };
-
+  console.log(shippingData);
   return (
     <Dialog open={openFinish} onOpenChange={setOpenFinish}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Finalizar Expedição</DialogTitle>
+          <DialogTitle className="text-center">Finalizar Expedição</DialogTitle>
         </DialogHeader>
-
+        <DialogTitle className="text-center">Rº {shippingData?.id}</DialogTitle>
+        <DialogDescription className="text-center">
+          {shippingData?.name} - {shippingData?.placa}
+        </DialogDescription>
         <div className="space-y-4">
           <div>
             <Label htmlFor="dispatch_date" className="mb-1">
