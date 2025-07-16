@@ -26,6 +26,8 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
   const { shippingData, handleFindIdShipping } = useShipping();
   const { isLoadingContext } = useLoading();
 
+  const [cor, setCor] = useState<number[]>([]);
+
   const [openDelete, setOpenDelete] = useState(false);
   const [idDelete, setIdDelete] = useState<number>(0);
   const [dataShipmentDelete, setDataShipmentDelete] =
@@ -63,6 +65,12 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
     setOpenDelete(true);
   };
 
+  const toggleSelection = (id: number) => {
+    setCor((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
   return (
     <>
       {shippingData?.id === id &&
@@ -98,10 +106,22 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
                     }
 
                     return (
-                      <TableRow key={index} className="h-8">
+                      <TableRow
+                        key={index}
+                        className={
+                          cor.includes(invoice.shipment.id)
+                            ? "h-8 bg-neutral-100"
+                            : "h-8"
+                        }
+                      >
                         <TableCell className="px-2 py-1">
                           <div className="flex items-center gap-3">
-                            <Checkbox id="terms" />
+                            <Checkbox
+                              id="terms"
+                              onCheckedChange={() =>
+                                toggleSelection(invoice.shipment.id)
+                              }
+                            />
                           </div>
                         </TableCell>
                         <TableCell className="px-2 py-1">
@@ -110,7 +130,13 @@ export function ShipmentCreateTable({ id }: UIPropsModal) {
                         <TableCell className="px-2 py-1">
                           {invoice.shipment.supply}
                         </TableCell>
-                        <TableCell className="px-2 py-1">
+                        <TableCell
+                          className={
+                            cor.includes(invoice.shipment.id)
+                              ? "px-2 py-1 font-bold"
+                              : "px-2 py-1"
+                          }
+                        >
                           {invoice.shipment.invoice_number}
                         </TableCell>
                         <TableCell className="px-2 py-1">
